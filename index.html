@@ -17,6 +17,9 @@
     <!-- Custom styles for this template -->
     <link href="grid.css" rel="stylesheet">
 
+	<!--Angular -->
+    <script src="/bower_components/angular/angular.js"></script>
+	
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
@@ -40,10 +43,9 @@
       <div class="row">
         <div class="col-md-8">
           <svg width="100%" height="500">
-			  pretty pictures here
-			  <circle cx="250" cy="250" r="50" opacity = ".6">
-				  <animate attributeName="cx" dur="8s" values= 250; 200; 250 repeatCount="indefinite"/>
-			  </circle>
+			  pretty pictures should be here
+			  <div ng-app="orbit.js ng-controller" ng-controller="OrbitController as orbiter">
+			  <circle cx="250" cy="250" r="50" opacity = ".6"/>
 	   </svg>
           <div class="row">
             <div class="col-md-6">Body attributes</div>
