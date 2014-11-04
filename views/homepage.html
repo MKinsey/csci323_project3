@@ -100,7 +100,7 @@
 
         $('button[name="open"]').attr('disabled', true);
         $('button[name="close"],button[name="start"]').attr('disabled', false);
-        socket = new WebSocket('ws://127.0.0.1:8000/');
+        socket = new WebSocket('@{config['websocket-url']}');
 
         socket.onopen = function() {
 
