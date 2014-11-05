@@ -1,0 +1,4 @@
+*~
+tmp/*
+debug.pid
+databases/webcounter.cache
