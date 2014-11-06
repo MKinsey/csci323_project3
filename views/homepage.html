@@ -215,6 +215,43 @@
     }
 
 </script>
+
+<script type="text/javascript">
+orbitable.controller('BodyCtrl', ['$scope',
+function($scope) {
+    angularsocket = new WebSocket('@{config['websocket-url']}');
+    $scope.data = bodyData;
+    angularsocket.onmessage = function(e) {
+        var command = JSON.parse(decodeURIComponent(e.data)).command;
+        if (command === 'initialize') {
+            var bodies = JSON.parse(decodeURIComponent(e.data)).bodies;
+            bodyData = [];
+            for (var i = 0; i < bodies.length; i++) {
+                var body = bodies[i];
+                var bodyStruct = {};
+                bodyStruct['id'] = body[0];
+                bodyStruct['x'] = body[1];
+                bodyStruct['y'] = body[2];
+                bodyStruct['m'] = body[3];
+                bodyData.push(bodyStruct);
+            }
+            $scope.data = bodyData;
+        } else if (command === 'update') {
+            $scope.$apply(function() {
+                var positions = JSON.parse(decodeURIComponent(e.data)).positions;
+                for (var i = 0; i < positions.length; i++) {
+                    bodyData[i].x = positions[i][1];
+                    bodyData[i].y = positions[i][2];
+                }
+            });
+            //$scope.data = bodyDataList;
+        } else {
+            //$scope.data = bodyData;
+        }
+    }
+}
+]);
+</script>
 </body>
 </html>
 
