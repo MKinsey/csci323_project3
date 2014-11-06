@@ -42,7 +42,11 @@
       <div class="row">
         <div class="col-md-8">
 
-<div d3-bars bar-height="20" bar-padding="5"></div>
+
+<div ng-controller="D3Ctrl">
+<d3-bodies bar-height="20" bar-padding="5" data="data"></d3-bodies>
+<input ng-model="data[0].m" type="text" placeholder="Mass of Planet 1" />
+</div>
 
 	    <!--ul>
 	       <li ng-repeat="phone in phones">

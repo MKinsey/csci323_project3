@@ -13,14 +13,14 @@
 //var phonecatApp = angular.module('phonecatApp', []);
 
 var d3app = angular.module('d3angularapp', ['d3'])
-    .directive('d3Bars', ['$window', '$timeout', 'd3Service',
+    .directive('d3Bodies', ['$window', '$timeout', 'd3Service',
                           function($window, $timeout, d3Service) {
                        return {
                            restrict: 'EA',
                            scope: {
-                               //                               data: '=',
-                               //                               label: '@',
-                               //                               onClick: '&'
+                                                              data: '='
+                                                              //                                                              label: '@',
+                                                              //                                                              onClick: '&'
                            },
                            link: function(scope, ele, attrs) {
                                d3Service.d3().then(function(d3) {
@@ -44,16 +44,15 @@ var d3app = angular.module('d3angularapp', ['d3'])
                                                scope.render(scope.data);
                                            });
  
-                                       //scope.$watch('data', function(newData) {
-                                       //        scope.render(newData);
-                                       //    }, true);
+                                       scope.$watch('data', function(newData) {
+                                               scope.render(newData);
+                                           }, true);
 
-                                       scope.data = [
-{name: "Greg", score:98}
-                                                     ];
- 
                                        scope.render = function(data) {
-                                           var circle = svg.selectAll("circle").data([10,20,30]);
+                                           var masses = data.map(function(d) {
+                                                   return d.m;
+                                               });
+                                           var circle = svg.selectAll("circle").data(masses);
                                            var circleEnter = circle.enter().append("circle");
 
                                            circleEnter.attr("cy", 20);
@@ -118,12 +117,13 @@ var d3app = angular.module('d3angularapp', ['d3'])
                            }}
                    }]);
 
-/*d3app.controller('D3Ctrl', ['$scope', function($scope){
-            $scope.greeting = "Fuck you kindly";
-            $scope.data = [
-                           {name: "Greg", score: 98}
-                           ];
-        }]);*/
+bodyData = [
+        {id: 0, x: 50, y: 20, m: 10}, {id: 1, x: 100, y: 20, m: 20}, {id: 2, x: 150, y: 20, m: 30}
+       ];
+
+d3app.controller('D3Ctrl', ['$scope', function($scope){
+            $scope.data = bodyData;
+        }]);
 
 /*phonecatApp.controller('PhoneListCtrl', function ($scope) {
   $scope.phones = [
