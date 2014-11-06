@@ -1,13 +1,12 @@
-
 <!DOCTYPE html>
-<html lang="en" ng-app="d3angularapp">
+<html lang="en" ng-app="orbitable">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="m_kinsey">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="favicon.ico">
 
     <title>Orbitable</title>
 
@@ -18,15 +17,15 @@
     <!--link href="./css/grid.css" rel="stylesheet"-->
 
 	<!--Angular -->
-   	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-route.min.js">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-route.min.js">
 
-	<!--D3 -->
-	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!--D3 -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	
 	<!--JS-->
-        <script src="./d3.js"></script>
-	<script src="./orbit.js"></script>
+    <script src="./d3.js"></script>
+    <script src="./orbit.js"></script>
 
   </head>
 
@@ -34,41 +33,43 @@
     <div class="container">
 
       <div class="page-header">
-        <h1>Orbitable</h1>
-        <p class="lead">Working Example.</p>
+        <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
+        <p class="lead">1 user online</p>
       </div>
-      <hr>
 
-      <div class="row">
+      <div class="row" ng-controller="BodyCtrl">
         <div class="col-md-8">
-
-
-<div ng-controller="D3Ctrl">
-<d3-bodies bar-height="20" bar-padding="5" data="data"></d3-bodies>
-<input ng-model="data[0].m" type="number" min="1" placeholder="Mass of Planet 1" />
-</div>
-
-	    <!--ul>
-	       <li ng-repeat="phone in phones">
-	         <span>{{phone.name}}</span>
-	         <p>{{phone.snippet}}</p>
-	       </li>
-	     </ul-->	
-          <!-- <svg width="100%" height="500">
-			  pretty pictures should be here
-			  <div ng-app="orbit.js ng-controller" ng-controller="OrbitController as orbit">
-			  <circle ng-repeat="body in simulation" cx="250" cy="250" r="50" opacity = ".6"/>
-		     	  </div>
-	   </svg> -->
-          <div class="row">
-            <div class="col-md-6">Body attributes</div>
-            <div class="col-md-6">another.</div>
-          </div>
+            <d3-bodies height-trim="260" size-factor="5" data="data"></d3-bodies>
+            <div class="row panel panel-default">
+                <div class="col-md-6 panel-body" style="text-align: center;">
+                    <div class="col-md-2">
+                        <h5>Pos</h5>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-addon">x</div>
+                            <input ng-model="data[0].x" type="number" min="1" placeholder="X position of Planet 1" style="width: 75px;" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-addon">y</div>
+                            <input ng-model="data[0].y" type="number" min="1" placeholder="Y position of Planet 1" style="width: 75px;" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 panel-body" style="text-align: center; border-left: 1px solid #ddd;">
+                    <div class="input-group">
+                        <div class="input-group-addon">Mass:</div>
+                        <input ng-model="data[0].m" type="number" min="1" placeholder="Mass of Planet 1" class="form-control" />
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">Toolbox here!</div>
+        <div class="col-md-4">
+            Toolbox here!
+        </div>
       </div>
-
     </div> <!-- /container -->
-
   </body>
 </html>
