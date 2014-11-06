@@ -1,0 +1,57 @@
+/*
+     Send message to all
+     @value {String or Object}
+     @names {String Array} :: client.id, optional - default null
+     @blacklist {String Array} :: client.id, optional - default null
+
+     if (names === null || names === undefined)
+     message send to all users
+
+     */
+    // controller.send(value, names, blacklist);
+
+    /*
+     Close connection
+     @names {String Array} :: client.id, optional - default null
+
+     if (names === null || names === undefined)
+     close/disconnect all users
+
+     */
+    // controller.close(names);
+
+    /*
+     Destroy websocket
+     */
+    // controller.destroy();
+
+    /*
+     Get online count
+     return {Number}
+     */
+    // controller.online;
+
+    /*
+     Find a client
+     @name {String}
+     return {Client}
+     */
+    // controller.find(name);
+
+    // DESTROY CONTROLLER
+    // controller.destroy();
+
+    // ============================================================
+
+    // client.id               : client identifiactor, you can modify this property, default contain random string
+    // client.socket           : socket (internal)
+    // client.req              : request
+    // client.uri              : URI
+    // client.ip               : IP
+    // client.session          : empty object, you can modify this property
+    // client.user             : empty object, you can modify this property
+    // client.query            : get URL query parameters
+
+    // client.cookie(name)	   : value
+    // client.send(value)      : send message
+    // client.close([message]) : disconnect client

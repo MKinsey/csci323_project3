@@ -1,0 +1,4 @@
+default-ip                      : 127.0.0.1
+default-port                    : 8000
+
+websocket-url                   : ws://127.0.0.1:8000
