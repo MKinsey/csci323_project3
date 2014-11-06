@@ -1,4 +1,4 @@
 *~
 tmp/*
-debug.pid
+*.pid
 databases/webcounter.cache
