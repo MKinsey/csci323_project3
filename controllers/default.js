@@ -19,9 +19,8 @@ var controller;
 
 // PHYSICS BODIES
 var bodies = new Array(2);
-bodies[0] = new Body(  0,  0,  0,   0, 1000,0);        // Trivial example
-bodies[1] = new Body( 10,  1,  0, 0.1, 10,1);
-
+bodies[0] = new Body(  200,  50,  0,   0, 1000,0);        // Trivial example
+bodies[1] = new Body( 100,  10,  0, 0.1, 10,1);
 
 // MESSAGES
 var outPositions = new Array(bodies.length);
@@ -124,7 +123,7 @@ function socket_homepage() {
         }
 
         var box = {command: 'initialize', bodies: initBodies};
-        controller.send(box);
+        client.send(box);
 
     });
 
