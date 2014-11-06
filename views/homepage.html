@@ -220,7 +220,6 @@
 orbitable.controller('BodyCtrl', ['$scope',
 function($scope) {
     angularsocket = new WebSocket('@{config['websocket-url']}');
-    $scope.data = bodyData;
     angularsocket.onmessage = function(e) {
         var command = JSON.parse(decodeURIComponent(e.data)).command;
         if (command === 'initialize') {
@@ -244,9 +243,6 @@ function($scope) {
                     bodyData[i].y = positions[i][2];
                 }
             });
-            //$scope.data = bodyDataList;
-        } else {
-            //$scope.data = bodyData;
         }
     }
 }
