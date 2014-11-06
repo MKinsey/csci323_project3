@@ -153,6 +153,11 @@ function socket_homepage() {
         }
         if (command == 'reset') {
             console.log("Resetting...");
+            play = false;
+            bodies[0] = new Body(  200,  50,  0,   0, 1000,0);        // Trivial example
+            bodies[1] = new Body( 100,  10,  0, 0.1, 10,1);
+            steps = 0;
+            controller.send(simulate());
         }
 
 
