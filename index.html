@@ -69,6 +69,7 @@
 <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 <script type="text/javascript">
 
+
     var newData = "";
 
     var socket = null;
@@ -98,9 +99,9 @@
         if (socket !== null)
             return;
 
-        $('button[name="open"]').attr('disabled', true);
-        $('button[name="close"],button[name="start"]').attr('disabled', false);
-        socket = new WebSocket('@{config.name}');
+        //$('button[name="open"]').attr('disabled', true);
+        //$('button[name="close"],button[name="start"]').attr('disabled', false);
+        //socket = new WebSocket('ws://127.0.0.1:8000');
 
         socket.onopen = function() {
 
