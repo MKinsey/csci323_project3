@@ -9,7 +9,7 @@
     <meta name="author" content="m_kinsey">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Grid Template for Bootstrap</title>
+    <title>Orbitable</title>
 
     <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -32,7 +32,7 @@
 <div class="container">
 
     <div class="page-header">
-        <h1>Obritable</h1>
+        <h1>Orbitable</h1>
         <p class="lead">Working Example.</p>
     </div>
     <div class="mb5"><button name="open">CONNECT</button></div>
@@ -117,8 +117,13 @@
         if (socket !== null)
             return;
         $('button[name="open"]').attr('disabled', true);
+<<<<<<< HEAD
         $('button[name="close"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
         socket = new WebSocket('ws://127.0.0.1:8000/');
+=======
+        $('button[name="close"],button[name="start"]').attr('disabled', false);
+        socket = new WebSocket('@{config['websocket-url']}');
+>>>>>>> FETCH_HEAD
 
         socket.onopen = function() {
 
