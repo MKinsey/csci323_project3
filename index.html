@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="orbitable">
-<head>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="m_kinsey">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="public/favicon.ico">
 
     <title>Orbitable</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="public/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <!--link href="./css/grid.css" rel="stylesheet"-->
@@ -24,18 +24,14 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	
 	<!--JS-->
-    <script src="./d3.js"></script>
-    <script src="./orbit.js"></script>
+    <script src="public/js/d3.js"></script>
+    <script src="public/js/orbit.js"></script>
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
+  </head>
 
-<body>
-<div class="container">
+  <body>
+    <div class="container">
+
       <div class="page-header">
         <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
         <p class="lead">1 user online</p>
@@ -71,96 +67,15 @@
             </div>
         </div>
         <div class="col-md-4">
-          <button name="open">CONNECT</button>
-          <button name="close" disabled="disabled">DISCONNECT</button>
-          <button name="start" disabled="disabled">START</button>
-          <br>
-          <textarea id="output" style="width: 100%;height: 200px;" readonly="readonly"></textarea>
+            <button name="open">CONNECT</button>
+            <button name="close" disabled="disabled">DISCONNECT</button>
+            <button name="start" disabled="disabled">START</button>
+            <button name="stop" disabled="disabled">STOP</button>
+            <button name="reset" disabled="disabled">RESET</button>
+            <br>
+            <textarea id="console" style="width: 100%;height: 300px; color: white; background-color: black;" readonly="readonly"></textarea>
         </div>
       </div>
     </div> <!-- /container -->
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-<script type="text/javascript">
-
-
-    var newData = "";
-
-    var socket = null;
-
-    $(document).ready(function() {
-
-        $('button').bind('click', function() {
-
-
-            if (this.name === 'start') {
-                start();
-                return;
-            }
-
-            if (this.name === 'open') {
-                connect();
-                return;
-            }
-
-            disconnect();
-        });
-    });
-
-    function connect() {
-
-
-        if (socket !== null)
-            return;
-
-        //$('button[name="open"]').attr('disabled', true);
-        //$('button[name="close"],button[name="start"]').attr('disabled', false);
-        //socket = new WebSocket('ws://127.0.0.1:8000');
-
-        socket.onopen = function() {
-
-        };
-
-        socket.onmessage = function(e) {
-            var el = $('#output');
-            var m = JSON.parse(decodeURIComponent(e.data)).message;
-            //el.val(m + '\n' + el.val());
-            el.val(m);
-            newData = el.value;
-
-        };
-
-        socket.onclose = function(e) {
-            // e.reason ==> total.js client.close('reason message');
-
-        };
-    }
-
-    function start() {
-        var el = $('input[name="message"]');
-        var msg = el.val();
-
-        if (socket !== null) //  && msg.length > 0)
-            socket.send(encodeURIComponent(JSON.stringify({ message: msg })));
-
-        el.val('');
-
-        setTimeout( start, 17 );
-    }
-
-    function disconnect() {
-
-        if (socket === null)
-            return;
-
-        $('button[name="close"],button[name="start"]').attr('disabled', true);
-        $('button[name="open"]').attr('disabled', false);
-
-        socket.close();
-        socket = null;
-    }
-
-</script>
-</body>
+  </body>
 </html>
-
