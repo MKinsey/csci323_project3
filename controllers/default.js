@@ -37,7 +37,7 @@ function step() {
         steps += 1;
         //console.log("Step: " + steps);
         controller.send(simulate());
-        setTimeout(step, 17);
+        setTimeout(step, 5);
     }
 
 }
