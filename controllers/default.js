@@ -35,7 +35,7 @@ var PI2 = Math.PI * 2;      // Establish PI2 constant
 function step() {
     if (play) {
         steps += 1;
-        console.log("Step: " + steps);
+        //console.log("Step: " + steps);
         controller.send(simulate());
         setTimeout(step, 17);
     }
