@@ -1,25 +1,31 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="orbitable">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="m_kinsey">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="favicon.ico">
 
     <title>Orbitable</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="grid.css" rel="stylesheet">
+    <!--jQuery-->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    
+    <!--Angular-->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-route.min.js">
 
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+    <!--D3-->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	
+    <!--JS-->
+    <script src="/js/d3.min.js"></script>
+    <script src="/js/orbit.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -32,114 +38,157 @@
 <div class="container">
 
     <div class="page-header">
-        <h1>Orbitable</h1>
-        <p class="lead">Working Example.</p>
+        <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
+        <p class="lead">1 user online</p>
     </div>
-    <div class="mb5"><button name="open">CONNECT</button></div>
-    <div><button name="close" disabled="disabled">DISCONNECT</button></div>
-    <br />
-    <div>
-        <button name="start" disabled="disabled">START</button></div>
-    </div>
-    <div>
-        <button name="stop" disabled="disabled">STOP</button></div>
-    </div>
-    <div>
-        <button name="reset" disabled="disabled">RESET</button></div>
-    </div>
-<br />
-<div>
-    <textarea id="output" style="width:620px;height:30px" readonly="readonly"></textarea>
-</div>
-<div>
-    <textarea id="console" style="width:620px;height:90px;color:white;background-color:black" readonly="readonly"></textarea>
-</div>
-<br />
-<hr>
 
-<div class="row">
-    <div class="col-md-8">
-        <svg width="500" height="500">
-            pretty pictures here
-            <circle cx="200" cy="200" r="75" fill= rbg(50,50,50) />
-        </svg>
-        <div class="row">
-            <div class="col-md-6">Body attributes</div>
-            <div class="col-md-6">another.</div>
+    <div class="row" ng-controller="BodyCtrl">
+        <div class="col-md-8">
+            <d3-bodies height-trim="260" size-factor="1" data="data"></d3-bodies>
+            <div class="row panel panel-default">
+                <div class="col-md-6 panel-body" style="text-align: center;">
+                    <div class="col-md-2">
+                        <h5>Pos</h5>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-addon">x</div>
+                            <input ng-model="data[1].x" type="number" min="1" placeholder="X position of Planet 2" style="width: 75px;" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-addon">y</div>
+                            <input ng-model="data[1].y" type="number" min="1" placeholder="Y position of Planet 2" style="width: 75px;" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 panel-body" style="text-align: center; border-left: 1px solid #ddd;">
+                    <div class="input-group">
+                        <div class="input-group-addon">Mass:</div>
+                        <input ng-model="data[0].m" type="number" min="1" placeholder="Mass of Planet 1" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <button name="start" disabled="disabled">START</button>
+            <button name="stop" disabled="disabled">STOP</button>
+            <button name="reset" disabled="disabled">RESET</button>
+            <br>
+            <textarea id="userbar" style="resize: none;width: 100%;height: 25px; color: dimgray; background-color: white;" readonly="readonly">Access: View Only</textarea>
+            <input type="text" name="namebox" maxlength="200" placeholder="Enter username here" style="width: 100%;height: 25px; color: white; background-color: black;" />
+            <button name="login">LOG IN</button>
+            <button name="logout" disabled="disabled">LOG OUT</button>
+            <button name="admin" disabled="disabled">PLAY GOD</button>
+            <br>
+            <textarea id="console" style="resize: none;width: 100%;height: 200px; color: white; background-color: black;" readonly="readonly"></textarea>
+            <br>
+            <button name="send" disabled="disabled">SEND</button>
+            <input type="text" name="chatbox" maxlength="200" disabled = "disabled" placeholder="..." style="width: 100%;height: 25px; color: white; background-color: black;" />
         </div>
     </div>
-    <div class="col-md-4">Toolbox here!</div>
-</div>
-
 </div> <!-- /container -->
 
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 <script type="text/javascript">
 
     var console = $('#console');
+    var userbar = $('#userbar');
     var consoleText = "";
     var socket = null;
+    var nameIn = "";
+    var name = "";
+    var loggedIn = false;
+    var userLevel = 0;
 
     var bodyList = {};
 
     $(document).ready(function() {
         // WHEN BUTTON IS CLICKED
         $('button').bind('click', function() {
-
-            log("Button pressed: " + this.name);
             // CHECK NAME AND TRIGGER CORRESPONDING FUNCTION
 
             if (this.name === 'start') {
-                send('start');
+                send({command: 'start'});
                 return;
             }
             if (this.name === 'stop') {
-                send('stop');
+                send({command: 'stop'});
                 return;
             }
             if (this.name === 'reset') {
-                send('reset');
+                send({command: 'reset'});
                 return;
             }
 
-            if (this.name === 'open') {
-                connect();
+            if (this.name === 'login') {
+                nameIn = $('input[name="namebox"]').val().toString();
+                log("Logging in with name: " + nameIn);
+                login();
                 return;
             }
 
-            disconnect();
+            if (this.name === 'admin') {
+                var response = window.prompt("What's the magic word?","");
+                send({command: 'setadmin', name: name, key: response});
+                return;
+            }
+
+            if (this.name === 'send') {
+                sendChat();
+                return;
+            }
+
+            logout();
+            $('input[name="namebox"]').val('');
         });
     });
+    function login() {
 
-    function connect() {
+        loggedIn = true;
 
         if (socket !== null)
             return;
-        $('button[name="open"]').attr('disabled', true);
-        $('button[name="close"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
-        socket = new WebSocket('ws://127.0.0.1:8000/');
+        $('button[name="login"],input[name="namebox"]').attr('disabled', true);
+        $('button[name="logout"],button[name="send"],input[name="chatbox"]').attr('disabled', false);
+        socket = new WebSocket('@{config['websocket-url']}');
+
+
 
         socket.onopen = function() {
+            if (loggedIn) {
+                send({command: 'login', name: nameIn});
+            }
 
         };
 
         socket.onmessage = function(e) {
 
-            // This is where we receive the data
+            // This is where we receive commands
+            var message = JSON.parse(decodeURIComponent(e.data));
+            var command = message.command;
 
-            var toConsole = "";
-
-            var command = JSON.parse(decodeURIComponent(e.data)).command;
             if (command === 'message') {
-                var msg = JSON.parse(decodeURIComponent(e.data)).message;
-                log("Server Message: " + msg);
+                var text = message.text;
+                log("Orb > " + text);
             }
-            if (command === 'update') {
-                updatePositions(JSON.parse(decodeURIComponent(e.data)).positions);
+            else if (command === 'chat') {
+                var text = message.text;
+                log(text);
             }
-            if (command === 'initialize') {
-                initializeBodies(JSON.parse(decodeURIComponent(e.data)).bodies);
+            else if (command === 'update') {
+                //updatePositions(JSON.parse(decodeURIComponent(e.data)).positions);
+            }
+            else if (command === 'initialize') {
+                //initializeBodies(JSON.parse(decodeURIComponent(e.data)).bodies);
+            }
+            else if (command === 'logout') {
+                logout();
+
+            }
+            else if (command === 'updateuser') {
+               name = message.name;
+               assignUserType(message.type);
             }
 
         };
@@ -150,54 +199,72 @@
     }
 
     function send(com) {
-        log("Send command: " + com);
+        log("\tSend command: " + com.command);
 
         if (socket !== null) //  && msg.length > 0)
-            socket.send(encodeURIComponent(JSON.stringify({ command: com})));
+            socket.send(encodeURIComponent(JSON.stringify(com)));
     }
 
-    function disconnect() {
+    function sendChat() {
+        var chatbox = $('input[name="chatbox"]');
+        var text = chatbox.val();
 
-        // When disconnect button is pressed...
+        if (socket !== null && text.length > 0)
+            socket.send(encodeURIComponent(JSON.stringify({ command: 'chat', text: text })));
+
+        chatbox.val('');
+    }
+
+    function logout() {
+
+        assignUserType(0);
+        resetUserBar();
 
         if (socket === null)
             return;
 
-        $('button[name="close"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
-        $('button[name="open"]').attr('disabled', false);
+        $('button[name="logout"],button[name="send"],input[name="chatbox"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
+        $('button[name="login"],input[name="namebox"]').attr('disabled', false);
 
         socket.close();
         socket = null;
+
+        log("Logged out");
     }
 
-    function updatePositions(positions) {
-        // updates the position of each body in bodyList
-        for (var i = 0; i < positions.length; i++) {
-            bodyList[positions[i][0]][1] = positions[i][1];
-            bodyList[positions[i][0]][2] = positions[i][2];
-            log("Update > " + bodyToString(bodyList[positions[i][0]]));
-
+    function assignUserType(type) {
+        if (type == 0) {
+            userLevel = 0;
+            $('button[name="admin"]').attr('disabled', true);
+            $('button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
         }
-
-
-    }
-
-    function initializeBodies(initBodies)  {
-        // clears bodyList and then populates with new list of bodies
-        bodyList = {};
-        for (var i = 0; i < initBodies.length; i++) {
-            bodyList[initBodies[i][0]] = initBodies[i];
-            log("Initialize > " + bodyToString(bodyList[initBodies[i][0]]));
+        if (type == 1) {
+            userLevel = 1;
+            $('button[name="admin"]').attr('disabled', false);
+            $('button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
         }
+        if (type == 2) {
+            userLevel = 2;
+            $('button[name="admin"]').attr('disabled', true);
+            $('button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
+        }
+        updateUserBar();
+
+
+
     }
 
-    function updateCircles() {
-        //TODO: Update circle positions here.
+    function updateUserBar() {
+        var accessText = "View only";
+        if (userLevel == 1) {accessText = "Interact";}
+        if (userLevel == 2) {accessText = "Admin";}
+        userbar.val("Username: " + name + " Access: " + accessText);
     }
 
-    function bodyToString(body) {
-        return "|id:" + body[0] + "|x:" + body[1] +"|y:" + body[2] +"|m:" + body[3] +"|c:" + body[4];
+    function resetUserBar() {
+        userbar.val("Access: View Only");
     }
+
     function log(text) {
 
         consoleText = text + "\n" + consoleText;
@@ -206,6 +273,45 @@
         //console.val(text + '\n' + console.text().val());
     }
 
+</script>
+
+<script type="text/javascript">
+orbitable.controller('BodyCtrl', ['$scope',
+function($scope) {
+    angularsocket = new WebSocket('@{config['websocket-url']}');
+    $scope.data = bodyData;
+    angularsocket.onmessage = function(e) {
+        var command = JSON.parse(decodeURIComponent(e.data)).command;
+        if (command === 'initialize') {
+            $scope.$apply(function() {
+                var bodies = JSON.parse(decodeURIComponent(e.data)).bodies;
+                bodyData = [];
+                for (var i = 0; i < bodies.length; i++) {
+                    var body = bodies[i];
+                    var bodyStruct = {};
+                    bodyStruct['id'] = body[0];
+                    bodyStruct['x'] = body[1];
+                    bodyStruct['y'] = body[2];
+                    bodyStruct['m'] = body[3];
+                    bodyData.push(bodyStruct);
+                }
+                $scope.data = bodyData;
+           });
+        } else if (command === 'update') {
+            $scope.$apply(function() {
+                var positions = JSON.parse(decodeURIComponent(e.data)).positions;
+                for (var i = 0; i < positions.length; i++) {
+                    bodyData[i].x = positions[i][1];
+                    bodyData[i].y = positions[i][2];
+                }
+            });
+            //$scope.data = bodyDataList;
+        } else {
+            //$scope.data = bodyData;
+        }
+    }
+}
+]);
 </script>
 </body>
 </html>

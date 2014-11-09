@@ -25,7 +25,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // A simple 2-dimensional vector implementation
 
-module.exports = Body
+module.exports = Body;
 
 function Body(x, y, xx, yy, m, id) {
 	this.x = x || 0;
@@ -76,11 +76,13 @@ Body.prototype.applyForce = function(dt,pdt) {
 }
 
 Body.prototype.serializeUpdate = function() {
-    return [this.id,Math.round(this.x),Math.round(this.y)];
+    //return [this.id,Math.round(this.x),Math.round(this.y)];
+    return [this.id, Math.round(this.x*100)/100, Math.round(this.y*100)/100];
     //return this.id + "," + Math.round(this.x*100)/100 + "," + Math.round(this.y*100)/100 + "|"
 }
 Body.prototype.serializeInitial = function() {
-    return [this.id,Math.round(this.x),Math.round(this.y),this.m,this.c];
+    //return [this.id,Math.round(this.x),Math.round(this.y),this.m,this.c];
+    return [this.id, Math.round(this.x*100)/100, Math.round(this.y*100)/100, this.m, this.c];
     //return this.id + "," + Math.round(this.x*100)/100 + "," + Math.round(this.y*100)/100 + "|"
 }
 
