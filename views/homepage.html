@@ -85,7 +85,7 @@
 
 <script type="text/javascript">
 
-    var console = $('#console');
+    var consoleArea = $('#console');
     var consoleText = "";
     var socket = null;
 
@@ -209,7 +209,7 @@
     function log(text) {
 
         consoleText = text + "\n" + consoleText;
-        console.val(consoleText);
+        consoleArea.val(consoleText);
         if (consoleText.length > 500) {consoleText = consoleText.substring(0,250);}
         //console.val(text + '\n' + console.text().val());
     }
