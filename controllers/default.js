@@ -30,7 +30,7 @@ var outPositions = new Array(bodies.length);
 var out = "";
 
 // CONSTANTS
-var G = 0.0006673;      // Establish gravitational constant
+var G = 6.673;      // Establish gravitational constant
 var PI2 = Math.PI * 2;      // Establish PI2 constant
 
 
