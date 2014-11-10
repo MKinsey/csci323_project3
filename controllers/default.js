@@ -158,11 +158,13 @@ function socket_homepage() {
         if (command == 'start') {
             console.log("Starting...");
             play = true;
+            controller.send({command: 'start'});
             step();
         }
         if (command == 'stop') {
             console.log("Stopping...");
             play = false;
+            controller.send({command: 'stop'});
         }
         if (command == 'reset') {
             console.log("Resetting...");

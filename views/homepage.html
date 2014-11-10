@@ -45,7 +45,7 @@
 
     <div class="row">
         <div class="col-md-8">
-          <d3-bodies edit-enabled="editEnabled" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="1" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
+          <d3-bodies running="running" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="1" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
             <div class="row panel panel-default" ng-hide="currentBody==null">
                 <div class="col-md-6 panel-body" style="text-align: center;">
                     <div class="col-md-2">
@@ -54,20 +54,20 @@
                     <div class="col-md-5">
                         <div class="input-group">
                             <div class="input-group-addon">x</div>
-                            <input ng-model="currentBody.x" ng-disabled="!editEnabled" type="number" placeholder="X position of Planet 2" style="width: 75px;" class="form-control"/>
+                            <input ng-model="currentBody.x" ng-disabled="running" type="number" placeholder="X position of Planet 2" style="width: 75px;" class="form-control"/>
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="input-group">
                             <div class="input-group-addon">y</div>
-                            <input ng-model="currentBody.y" ng-disabled="!editEnabled" type="number" placeholder="Y position of Planet 2" style="width: 75px;" class="form-control" />
+                            <input ng-model="currentBody.y" ng-disabled="running" type="number" placeholder="Y position of Planet 2" style="width: 75px;" class="form-control" />
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 panel-body" style="text-align: center; border-left: 1px solid #ddd;">
                     <div class="input-group">
                         <div class="input-group-addon">Mass:</div>
-                        <input ng-model="currentBody.m" ng-disabled="!editEnabled" type="number" min="0" placeholder="Mass of Planet 1" class="form-control" />
+                        <input ng-model="currentBody.m" ng-disabled="running" type="number" min="0" placeholder="Mass of Planet 1" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -75,9 +75,9 @@
         <div class="col-md-4">
             <button name="open">CONNECT</button>
             <button name="close" disabled="disabled">DISCONNECT</button>
-            <button name="start" ng-click="editEnabled=false" disabled="disabled">START</button>
-            <button name="stop" ng-click="editEnabled=true" disabled="disabled">STOP</button>
-            <button name="reset" ng-click="editEnabled=true" disabled="disabled">RESET</button>
+            <button name="start" disabled="disabled">START</button>
+            <button name="stop" disabled="disabled">STOP</button>
+            <button name="reset" disabled="disabled">RESET</button>
             <button name="center" ng-click="viewport.zoom = 1; viewport.translation = [0,0]">CENTER</button>
             <br>
             <input ng-model="viewport.zoom" type="range" max="10" min="0.1" step="0.1" />
@@ -231,7 +231,7 @@ orbitable.controller('BodyCtrl', ['$scope',
 function($scope) {
     $scope.viewport = {};
     $scope.viewport.zoom = 1;
-    $scope.editEnabled = true;
+    $scope.running = false;
     $scope.viewport.translation = [0,0];
     $scope.connected = false;
     $scope.showreconnect = false;
@@ -262,6 +262,7 @@ function($scope) {
                     if($scope.currentBody != null) {
                         $scope.currentBody = $scope.bodies[$scope.currentBody.id];
                     }
+                    $scope.running = JSON.parse(decodeURIComponent(e.data)).running;
                 });
             } else if (command === 'update') {
                 $scope.$apply(function() {
@@ -279,6 +280,14 @@ function($scope) {
             } else if (command === 'users') {
                 $scope.$apply(function() {
                         $scope.users = JSON.parse(decodeURIComponent(e.data)).users;
+                    });
+            } else if (command === 'start') {
+                $scope.$apply(function() {
+                        $scope.running = true;
+                    });
+            } else if (command === 'stop') {
+                $scope.$apply(function() {
+                        $scope.running = false;
                     });
             }
         }
