@@ -241,7 +241,7 @@ function($scope) {
     $scope.connect = function() {
         angularsocket = new WebSocket('@{config['websocket-url']}');
         angularsocket.onopen = function() { console.log("connected"); $scope.$apply(function() {$scope.connected = true; $scope.showreconnect = false;}); };
-        angularsocket.onclose = function() { console.log("disconnected"); $scope.$apply(function() {$scope.showreconnect = true;}); };
+        angularsocket.onclose = function() { console.log("disconnected"); $scope.$apply(function() {$scope.showreconnect = true; $scope.users = 0;}); };
         angularsocket.onmessage = function(e) {
             var command = JSON.parse(decodeURIComponent(e.data)).command;
             if (command === 'initialize') {
