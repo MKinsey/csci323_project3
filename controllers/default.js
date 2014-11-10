@@ -5,7 +5,7 @@ exports.install = function(framework) {
 }
 
 var steps = 0;
-var Body = require('../verlet-js/lib/body.js');
+var Body = require('./lib/body.js');
 
 // TIMING
 var timer = new Date();
