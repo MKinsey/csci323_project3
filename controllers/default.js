@@ -117,15 +117,16 @@ function socket_homepage() {
 
         // WHEN USER CONNECTS
         console.log('Connect / Online:', controller.online);
-        client.send({command: 'message', message: 'User Connected: {0}'.format(client.id) });
-        controller.send({command: 'message',  message: 'Connect new user: {0}\nOnline: {1}'.format(client.id, controller.online) }, [], [client.id]);
+        //client.send({command: 'message', message: 'User Connected: {0}'.format(client.id) });
+        //controller.send({command: 'message',  message: 'Connect new user: {0}\nOnline: {1}'.format(client.id, controller.online) }, [], [client.id]);
+        controller.send({command: 'users', users: controller.online});
 
         var initBodies = new Array(bodies.length);
         for(var i = 0; i < bodies.length; i++) {
             initBodies[i] = bodies[i].serializeInitial();
         }
 
-        var box = {command: 'initialize', bodies: initBodies};
+        var box = {command: 'initialize', bodies: initBodies, running: play};
         client.send(box);
 
         client.send({command:'viewport', translation: translation, zoom: zoom}, [], [client.id]);
@@ -136,8 +137,9 @@ function socket_homepage() {
 
         //WHEN USER DISCONNECTS
         console.log('Disconnect / Online:', controller.online);
-        client.send({ message: 'User Disconnected: {0}'.format(client.id) });
-        controller.send({ message: 'Disconnect user: {0}\nOnline: {1}'.format(client.id, controller.online) });
+        //client.send({ message: 'User Disconnected: {0}'.format(client.id) });
+        //controller.send({ message: 'Disconnect user: {0}\nOnline: {1}'.format(client.id, controller.online) });
+        controller.send({command: 'users', users: controller.online});
 
 
     });
@@ -173,7 +175,7 @@ function socket_homepage() {
                 initBodies[i] = bodies[i].serializeInitial();
             }
 
-            var box = {command: 'initialize', bodies: initBodies};
+            var box = {command: 'initialize', bodies: initBodies, running: play};
             controller.send(box);
         }
 
