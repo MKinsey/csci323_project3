@@ -16,6 +16,9 @@ var play = false;
 
 var controller;
 
+var translation = [0,0];
+var zoom = 1;
+
 
 // PHYSICS BODIES
 var bodies = new Array(2);
@@ -125,6 +128,8 @@ function socket_homepage() {
         var box = {command: 'initialize', bodies: initBodies};
         client.send(box);
 
+        client.send({command:'viewport', translation: translation, zoom: zoom}, [], [client.id]);
+
     });
 
     controller.on('close', function(client) {
@@ -144,6 +149,8 @@ function socket_homepage() {
 
         if (command == 'viewport') {
             controller.send({command:'viewport', translation: message.translation, zoom: message.zoom}, [], [client.id]);
+            translation = message.translation;
+            zoom = message.zoom;
         }
 
         if (command == 'start') {
