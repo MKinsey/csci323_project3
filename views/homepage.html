@@ -259,6 +259,9 @@ function($scope) {
                         bodyData.push(bodyStruct);
                     }
                     $scope.bodies = bodyData;
+                    if($scope.currentBody != null) {
+                        $scope.currentBody = $scope.bodies[$scope.currentBody.id];
+                    }
                 });
             } else if (command === 'update') {
                 $scope.$apply(function() {
