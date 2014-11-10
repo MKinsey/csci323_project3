@@ -40,6 +40,7 @@
     <div class="page-header">
         <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
         <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
+        <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <br><a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.</div>
     </div>
 
     <div class="row">
@@ -72,7 +73,6 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div ng-hide="!showreconnect" class="alert alert-danger">Uh oh! You've been disconnected somehow. <br><a ng-click="connect()" class="alert-link">Click here</a> to reconnect.</div>
             <button name="open">CONNECT</button>
             <button name="close" disabled="disabled">DISCONNECT</button>
             <button name="start" ng-click="editEnabled=false" disabled="disabled">START</button>
