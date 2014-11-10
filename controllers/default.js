@@ -64,7 +64,7 @@ function simulate() {
                 if (theta < 0) {
                     theta += PI2;
                 }
-                var tF = G * (bodyA.m * bodyB.m) / r ^ 2;
+                var tF = G * (bodyA.m * bodyB.m) / Math.pow(r,2);
                 var tFx = Math.cos(theta) * tF;
                 var tFy = Math.sin(theta) * tF;
                 bodyA.addForce(tFx, tFy);
