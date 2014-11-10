@@ -44,7 +44,7 @@
 
     <div class="row" ng-controller="BodyCtrl">
         <div class="col-md-8">
-            <d3-bodies height-trim="260" size-factor="1" data="data"></d3-bodies>
+          <d3-bodies height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="1" bodies="bodies" zoom-factor="zoomFactor" translation="translation" current-body="currentBody"></d3-bodies>
             <div class="row panel panel-default">
                 <div class="col-md-6 panel-body" style="text-align: center;">
                     <div class="col-md-2">
@@ -53,20 +53,20 @@
                     <div class="col-md-5">
                         <div class="input-group">
                             <div class="input-group-addon">x</div>
-                            <input ng-model="data[1].x" type="number" min="1" placeholder="X position of Planet 2" style="width: 75px;" class="form-control"/>
+                            <input ng-model="currentBody.x" type="number" min="1" placeholder="X position of Planet 2" style="width: 75px;" class="form-control"/>
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="input-group">
                             <div class="input-group-addon">y</div>
-                            <input ng-model="data[1].y" type="number" min="1" placeholder="Y position of Planet 2" style="width: 75px;" class="form-control" />
+                            <input ng-model="currentBody.y" type="number" min="1" placeholder="Y position of Planet 2" style="width: 75px;" class="form-control" />
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 panel-body" style="text-align: center; border-left: 1px solid #ddd;">
                     <div class="input-group">
                         <div class="input-group-addon">Mass:</div>
-                        <input ng-model="data[0].m" type="number" min="1" placeholder="Mass of Planet 1" class="form-control" />
+                        <input ng-model="currentBody.m" type="number" min="0" placeholder="Mass of Planet 1" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -77,6 +77,11 @@
             <button name="start" disabled="disabled">START</button>
             <button name="stop" disabled="disabled">STOP</button>
             <button name="reset" disabled="disabled">RESET</button>
+            <button name="center" ng-click="zoomFactor = 1; translation = [0,0]">CENTER</button>
+            <br>
+            <input ng-model="zoomFactor" type="range" max="10" min="0.1" step="0.1" />
+            <input ng-model="translation[0]" type="number" class="form-control" />
+            <input ng-model="translation[1]" type="number" class="form-control" />
             <br>
             <textarea id="console" style="width: 100%;height: 200px; color: white; background-color: black;" readonly="readonly"></textarea>
         </div>
@@ -116,7 +121,9 @@
                 return;
             }
 
-            disconnect();
+            if (this.name === 'close') {
+                disconnect();
+            }
         });
     });
 
@@ -219,8 +226,10 @@
 <script type="text/javascript">
 orbitable.controller('BodyCtrl', ['$scope',
 function($scope) {
+    $scope.zoomFactor = 1;
+    $scope.translation = [0,0];
     angularsocket = new WebSocket('@{config['websocket-url']}');
-    $scope.data = bodyData;
+    //$scope.bodies = bodyData;
     angularsocket.onmessage = function(e) {
         var command = JSON.parse(decodeURIComponent(e.data)).command;
         if (command === 'initialize') {
@@ -236,7 +245,8 @@ function($scope) {
                     bodyStruct['m'] = body[3];
                     bodyData.push(bodyStruct);
                 }
-                $scope.data = bodyData;
+                $scope.bodies = bodyData;
+                $scope.currentBody = $scope.bodies[1];
            });
         } else if (command === 'update') {
             $scope.$apply(function() {
@@ -246,9 +256,6 @@ function($scope) {
                     bodyData[i].y = positions[i][2];
                 }
             });
-            //$scope.data = bodyDataList;
-        } else {
-            //$scope.data = bodyData;
         }
     }
 }
