@@ -46,7 +46,7 @@
     <div class="row">
         <div class="col-md-8">
           <d3-bodies edit-enabled="editEnabled" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="1" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
-            <div class="row panel panel-default">
+            <div class="row panel panel-default" ng-hide="currentBody==null">
                 <div class="col-md-6 panel-body" style="text-align: center;">
                     <div class="col-md-2">
                         <h5>Pos</h5>
@@ -235,6 +235,7 @@ function($scope) {
     $scope.viewport.translation = [0,0];
     $scope.connected = false;
     $scope.showreconnect = false;
+    $scope.currentBody = null;
 
     $scope.users = 1;
 
@@ -258,7 +259,6 @@ function($scope) {
                         bodyData.push(bodyStruct);
                     }
                     $scope.bodies = bodyData;
-                    $scope.currentBody = $scope.bodies[1];
                 });
             } else if (command === 'update') {
                 $scope.$apply(function() {
