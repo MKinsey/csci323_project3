@@ -44,7 +44,7 @@
 
     <div class="row" ng-controller="BodyCtrl">
         <div class="col-md-8">
-          <d3-bodies edit-enabled="editEnabled" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="1" bodies="bodies" zoom-factor="zoomFactor" translation="translation" current-body="currentBody"></d3-bodies>
+          <d3-bodies edit-enabled="editEnabled" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="1" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
             <div class="row panel panel-default">
                 <div class="col-md-6 panel-body" style="text-align: center;">
                     <div class="col-md-2">
@@ -77,11 +77,11 @@
             <button name="start" ng-click="editEnabled=false" disabled="disabled">START</button>
             <button name="stop" ng-click="editEnabled=true" disabled="disabled">STOP</button>
             <button name="reset" ng-click="editEnabled=true" disabled="disabled">RESET</button>
-            <button name="center" ng-click="zoomFactor = 1; translation = [0,0]">CENTER</button>
+            <button name="center" ng-click="viewport.zoom = 1; viewport.translation = [0,0]">CENTER</button>
             <br>
-            <input ng-model="zoomFactor" type="range" max="10" min="0.1" step="0.1" />
-            <input ng-model="translation[0]" type="number" class="form-control" />
-            <input ng-model="translation[1]" type="number" class="form-control" />
+            <input ng-model="viewport.zoom" type="range" max="10" min="0.1" step="0.1" />
+            <input ng-model="viewport.translation[0]" type="number" class="form-control" />
+            <input ng-model="viewport.translation[1]" type="number" class="form-control" />
             <br>
             <textarea id="console" style="width: 100%;height: 200px; color: white; background-color: black;" readonly="readonly"></textarea>
         </div>
@@ -224,13 +224,19 @@
 </script>
 
 <script type="text/javascript">
+watchProblem = false;
 orbitable.controller('BodyCtrl', ['$scope',
 function($scope) {
-    $scope.zoomFactor = 1;
+    $scope.viewport = {};
+    $scope.viewport.zoom = 1;
     $scope.editEnabled = true;
-    $scope.translation = [0,0];
+    $scope.viewport.translation = [0,0];
     angularsocket = new WebSocket('@{config['websocket-url']}');
     //$scope.bodies = bodyData;
+    $scope.$watch("viewport", function(newView) {
+           if(angularsocket.readyState != 0 && !watchProblem) angularsocket.send(encodeURIComponent(JSON.stringify({command: "viewport", translation: newView.translation, zoom: newView.zoom})));
+           watchProblem = false;
+        }, true);
     angularsocket.onmessage = function(e) {
         var command = JSON.parse(decodeURIComponent(e.data)).command;
         if (command === 'initialize') {
@@ -257,6 +263,11 @@ function($scope) {
                     bodyData[i].y = positions[i][2];
                 }
             });
+        } else if (command === 'viewport') {
+            watchProblem = true;
+            $scope.$apply(function() {
+                    $scope.viewport = {zoom: JSON.parse(decodeURIComponent(e.data)).zoom, translation: JSON.parse(decodeURIComponent(e.data)).translation};
+                });
         }
     }
 }

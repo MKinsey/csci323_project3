@@ -142,6 +142,10 @@ function socket_homepage() {
         var command = message.command;
         console.log("Command: " + command);
 
+        if (command == 'viewport') {
+            controller.send({command:'viewport', translation: message.translation, zoom: message.zoom}, [], [client.id]);
+        }
+
         if (command == 'start') {
             console.log("Starting...");
             play = true;
