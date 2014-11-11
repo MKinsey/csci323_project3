@@ -118,7 +118,7 @@ function socket_homepage() {
             simulator.reset();
             steps = 0;
 
-            initialize(client);
+            initialize(controller);
         }
         if (command == 'rename') {
 
