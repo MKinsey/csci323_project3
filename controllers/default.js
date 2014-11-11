@@ -3,41 +3,27 @@ exports.install = function(framework) {
     framework.route('/usage/', view_usage);
     framework.websocket('/', socket_homepage, ['json']);
 }
-var Body = require('./lib/body.js');
 var Userbase = require('./lib/userbase.js');
+var Simulator = require('./lib/simulator.js');
 
 
 // OTHER
 var userbase = new Userbase();
+var simulator = new Simulator();
 var controller;
 
 // DEBUG
 var userbaseDebug = true;
 
 // TIMING
-var timer = new Date();
-var frameTime = timer.getTime();            // Instatiate initial timing objects
-var deltaTime = 15;
-var ping = 15;
 var play = false;
 var steps = 0;
+
 
 // VIEW
 var translation = [0,0];
 var zoom = 1;
 
-// PHYSICS BODIES
-var bodies = new Array(2);
-bodies[0] = new Body(  200,  50,  0,   0, 1000,0);        // Trivial example
-bodies[1] = new Body( 100,  10,  0, 0.4, 10,1);
-
-// MESSAGES
-var outPositions = new Array(bodies.length);
-var out = "";
-
-// CONSTANTS
-var G = 6.673;      // Establish gravitational constant
-var PI2 = Math.PI * 2;      // Establish PI2 constant
 
 
 
@@ -45,63 +31,11 @@ function step() {
     if (play) {
         steps += 1;
         //console.log("Step: " + steps);
-        controller.send(simulate());
+
+        controller.send(simulator.simulate());
+
         setTimeout(step, 5);
     }
-
-}
-
-function simulate() {
-    for (var a = 0; a < bodies.length; a++) {
-        var bodyA = bodies[a];
-        //console.log(">" + bodies[a].toString());
-        bodyA.resetForce()
-        for (var b = 0; b < bodies.length; b++) {
-            var bodyB = bodies[b];
-            if (bodyA.id != bodyB.id) {
-                var r = getDistance(bodyA.x, bodyA.y, bodyB.x, bodyB.y);
-                var theta = Math.atan((bodyB.y - bodyA.y) / (bodyB.x - bodyA.x));
-                if (bodyB.x < bodyA.x) {
-                    theta += Math.PI;
-                }
-                if (theta >= PI2) {
-                    theta -= PI2;
-                }
-                if (theta < 0) {
-                    theta += PI2;
-                }
-                var tF = G * (bodyA.m * bodyB.m) / Math.pow(r,2);
-                var tFx = Math.cos(theta) * tF;
-                var tFy = Math.sin(theta) * tF;
-                bodyA.addForce(tFx, tFy);
-
-                //console.log("Add Force: From: " + bodyB.toString() + " r: " + r + " | F: " + tF + " Fx: " + tFx + " Fy: " + tFy + " | Deg: " + (theta * (180 / Math.PI)) + " Rad: " + theta);
-
-            }
-        }
-        //console.log(bodies[a].toString());
-    }
-
-    timer = new Date();
-    deltaTime = timer.getTime() - frameTime;
-    ping = ping * 0.9 + deltaTime * 0.1;
-    out = "";
-
-    var box = { command: 'wait '};
-
-    //console.log("deltaTime: " + deltaTime + " Ping: " + ping);
-    if (ping < 25) {
-        for (var c = 0; c < bodies.length; c++) {
-            bodies[c].applyForce(deltaTime / 1000);
-            outPositions[c] = bodies[c].serializeUpdate();
-            out = out + " / " + bodies[c].toString();
-        }
-        box = { command: 'update', positions: outPositions};
-        // send to all without this client
-    }
-    //else {box = { command: 'message', message: 'Waiting for ping reduction: ' + ping};}
-    frameTime = timer.getTime();
-    return box;
 
 }
 
@@ -139,15 +73,7 @@ function socket_homepage() {
         //client.send({command: 'message', message: 'User Connected: {0}'.format(client.id) });
         //controller.send({command: 'message',  message: 'Connect new user: {0}\nOnline: {1}'.format(client.id, controller.online) }, [], [client.id]);
 
-        var initBodies = new Array(bodies.length);
-        for(var i = 0; i < bodies.length; i++) {
-            initBodies[i] = bodies[i].serializeInitial();
-        }
-
-        var box = {command: 'initialize', bodies: initBodies, running: play};
-        client.send(box);
-
-        client.send({command:'viewport', translation: translation, zoom: zoom}, [], [client.id]);
+        initialize(client);
 
     });
 
@@ -189,16 +115,10 @@ function socket_homepage() {
         if (command == 'reset') {
             console.log("Resetting...");
             play = false;
-            bodies[0] = new Body(  200,  50,  0,   0, 1000,0);        // Trivial example
-            bodies[1] = new Body( 100,  10,  0, 0.1, 10,1);
+            simulator.reset();
             steps = 0;
-            var initBodies = new Array(bodies.length);
-            for(var i = 0; i < bodies.length; i++) {
-                initBodies[i] = bodies[i].serializeInitial();
-            }
 
-            var box = {command: 'initialize', bodies: initBodies, running: play};
-            controller.send(box);
+            initialize(client);
         }
         if (command == 'rename') {
 
@@ -256,8 +176,11 @@ function socket_homepage() {
     // controller.online;
 }
 
-function getDistance(x1,y1,x2,y2) {
+function initialize(client) {
+    var initBodies = simulator.initialize();
 
-    return Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2));
+    var box = {command: 'initialize', bodies: initBodies, running: play};
+    client.send(box);
 
+    client.send({command:'viewport', translation: translation, zoom: zoom}, [], [client.id]);
 }

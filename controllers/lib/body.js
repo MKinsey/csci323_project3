@@ -1,4 +1,4 @@
-module.exports = Body
+module.exports = Body;
 
 function Body(x, y, xx, yy, m, id) {
 	this.x = x || 0;
