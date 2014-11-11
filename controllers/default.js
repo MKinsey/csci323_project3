@@ -6,10 +6,6 @@ exports.install = function(framework) {
 var Body = require('./lib/body.js');
 var Userbase = require('./lib/userbase.js');
 
-<<<<<<< HEAD
-var steps = 0;
-var Body = require('./lib/body.js');
-=======
 
 // OTHER
 var userbase = new Userbase();
@@ -17,7 +13,6 @@ var controller;
 
 // DEBUG
 var userbaseDebug = true;
->>>>>>> usertypes
 
 // TIMING
 var timer = new Date();
@@ -33,8 +28,9 @@ var zoom = 1;
 
 // PHYSICS BODIES
 var bodies = new Array(2);
-bodies[0] = new Body( 400,  100, 0, 0, 1000,0);        // Trivial example
-bodies[1] = new Body( 300,  75,  0, 0.4, 50,1);
+bodies[0] = new Body(  200,  50,  0,   0, 1000,0);        // Trivial example
+bodies[1] = new Body( 100,  10,  0, 0.4, 10,1);
+
 // MESSAGES
 var outPositions = new Array(bodies.length);
 var out = "";
@@ -193,8 +189,8 @@ function socket_homepage() {
         if (command == 'reset') {
             console.log("Resetting...");
             play = false;
-            bodies[0] = new Body( 400,  100,  0,   0, 1000, 0);        // Trivial example
-            bodies[1] = new Body( 300,  75,  0, 0.4, 50, 1);
+            bodies[0] = new Body(  200,  50,  0,   0, 1000,0);        // Trivial example
+            bodies[1] = new Body( 100,  10,  0, 0.1, 10,1);
             steps = 0;
             var initBodies = new Array(bodies.length);
             for(var i = 0; i < bodies.length; i++) {
@@ -252,11 +248,7 @@ function socket_homepage() {
     });
 
     controller.on('start', function(client, message) {
-<<<<<<< HEAD
-        console.log("You just started this b!");
-=======
 
->>>>>>> usertypes
     });
 
 

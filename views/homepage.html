@@ -46,11 +46,7 @@
 
     <div class="row">
         <div class="col-md-8">
-<<<<<<< HEAD
-          <d3-bodies running="running" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="0.5" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
-=======
             <d3-bodies running="running" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="1" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
->>>>>>> usertypes
             <div class="row panel panel-default" ng-hide="currentBody==null">
                 <div class="col-md-6 panel-body" style="text-align: center;">
                     <div class="col-md-2">
@@ -278,89 +274,6 @@
     }
 
 </script>
-<<<<<<< HEAD
-
-<script type="text/javascript">
-watchProblem = false;
-angularsocket = null;
-orbitable.controller('BodyCtrl', ['$scope',
-function($scope) {
-    $scope.viewport = {};
-    $scope.viewport.zoom = 1;
-    $scope.running = false;
-    $scope.viewport.translation = [0,0];
-    $scope.connected = false;
-    $scope.showreconnect = false;
-    $scope.currentBody = null;
-
-    $scope.users = 1;
-
-    $scope.connect = function() {
-        angularsocket = new WebSocket('@{config['websocket-url']}');
-        angularsocket.onopen = function() { console.log("connected"); $scope.$apply(function() {$scope.connected = true; $scope.showreconnect = false;}); };
-        angularsocket.onclose = function() { console.log("disconnected"); $scope.$apply(function() {$scope.showreconnect = true; $scope.users = 0;}); };
-        angularsocket.onmessage = function(e) {
-            var command = JSON.parse(decodeURIComponent(e.data)).command;
-            if (command === 'initialize') {
-                $scope.$apply(function() {
-                    var bodies = JSON.parse(decodeURIComponent(e.data)).bodies;
-                    bodyData = [];
-                    for (var i = 0; i < bodies.length; i++) {
-                        var body = bodies[i];
-                        var bodyStruct = {};
-                        bodyStruct['id'] = body[0];
-                        bodyStruct['x'] = body[1];
-                        bodyStruct['y'] = body[2];
-                        bodyStruct['m'] = body[3];
-                        bodyStruct['c'] = body[4];
-                        bodyData.push(bodyStruct);
-                    }
-                    $scope.bodies = bodyData;
-                    if($scope.currentBody != null) {
-                        $scope.currentBody = $scope.bodies[$scope.currentBody.id];
-                    }
-                    $scope.running = JSON.parse(decodeURIComponent(e.data)).running;
-                });
-            } else if (command === 'update') {
-                $scope.$apply(function() {
-                        var positions = JSON.parse(decodeURIComponent(e.data)).positions;
-                        for (var i = 0; i < positions.length; i++) {
-                            bodyData[i].x = positions[i][1];
-                            bodyData[i].y = positions[i][2];
-                        }
-                    });
-            } else if (command === 'viewport') {
-                watchProblem = true;
-                $scope.$apply(function() {
-                        $scope.viewport = {zoom: JSON.parse(decodeURIComponent(e.data)).zoom, translation: JSON.parse(decodeURIComponent(e.data)).translation};
-                    });
-            } else if (command === 'users') {
-                $scope.$apply(function() {
-                        $scope.users = JSON.parse(decodeURIComponent(e.data)).users;
-                    });
-            } else if (command === 'start') {
-                $scope.$apply(function() {
-                        $scope.running = true;
-                    });
-            } else if (command === 'stop') {
-                $scope.$apply(function() {
-                        $scope.running = false;
-                    });
-            }
-        }
-    };
-
-    $scope.connect();
-
-    $scope.$watch("viewport", function(newView) {
-           if(angularsocket.readyState != 0 && !watchProblem) angularsocket.send(encodeURIComponent(JSON.stringify({command: "viewport", translation: newView.translation, zoom: newView.zoom})));
-           watchProblem = false;
-        }, true);
-}
-]);
-</script>
-=======
->>>>>>> usertypes
 </body>
 </html>
 
