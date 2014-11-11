@@ -3,8 +3,8 @@ exports.install = function(framework) {
     framework.route('/usage/', view_usage);
     framework.websocket('/', socket_homepage, ['json']);
 }
-var Body = require('../verlet-js/lib/body.js');
-var Userbase = require('../userbase.js');
+var Body = require('./lib/body.js');
+var Userbase = require('./lib/userbase.js');
 
 
 // OTHER
