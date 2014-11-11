@@ -3,9 +3,21 @@ exports.install = function(framework) {
     framework.route('/usage/', view_usage);
     framework.websocket('/', socket_homepage, ['json']);
 }
+var Body = require('./lib/body.js');
+var Userbase = require('./lib/userbase.js');
 
+<<<<<<< HEAD
 var steps = 0;
 var Body = require('./lib/body.js');
+=======
+
+// OTHER
+var userbase = new Userbase();
+var controller;
+
+// DEBUG
+var userbaseDebug = true;
+>>>>>>> usertypes
 
 // TIMING
 var timer = new Date();
@@ -13,12 +25,11 @@ var frameTime = timer.getTime();            // Instatiate initial timing objects
 var deltaTime = 15;
 var ping = 15;
 var play = false;
+var steps = 0;
 
-var controller;
-
+// VIEW
 var translation = [0,0];
 var zoom = 1;
-
 
 // PHYSICS BODIES
 var bodies = new Array(2);
@@ -80,7 +91,7 @@ function simulate() {
     ping = ping * 0.9 + deltaTime * 0.1;
     out = "";
 
-    var box;
+    var box = { command: 'wait '};
 
     //console.log("deltaTime: " + deltaTime + " Ping: " + ping);
     if (ping < 25) {
@@ -92,7 +103,7 @@ function simulate() {
         box = { command: 'update', positions: outPositions};
         // send to all without this client
     }
-    else {box = { command: 'message', message: 'Waiting for ping reduction: ' + ping};}
+    //else {box = { command: 'message', message: 'Waiting for ping reduction: ' + ping};}
     frameTime = timer.getTime();
     return box;
 
@@ -115,10 +126,22 @@ function socket_homepage() {
     controller.on('open', function(client) {
 
         // WHEN USER CONNECTS
-        console.log('Connect / Online:', controller.online);
+
+        client.id = "guest" + Date.now();
+        var index = userbase.addUser(client.id,client.ip,0);
+        if (userbaseDebug) {userbase.print();}
+        client.send({command: 'updateuser', name: client.id, type: 0, index: index});
+
+
+        client.send({command: 'updateuser', name: client.id, type: 2, index: index});
+        client.send({command: 'message', text: "You have been automatically assigned an admin access level."});
+
+
+        console.log('Connect (' + client.id + ') / Online:', controller.online);
+        controller.send({command: 'users', users: controller.online});
+
         //client.send({command: 'message', message: 'User Connected: {0}'.format(client.id) });
         //controller.send({command: 'message',  message: 'Connect new user: {0}\nOnline: {1}'.format(client.id, controller.online) }, [], [client.id]);
-        controller.send({command: 'users', users: controller.online});
 
         var initBodies = new Array(bodies.length);
         for(var i = 0; i < bodies.length; i++) {
@@ -134,8 +157,11 @@ function socket_homepage() {
 
     controller.on('close', function(client) {
 
+        userbase.removeUser(client.id);
+        if (userbaseDebug) {userbase.print();}
+
         //WHEN USER DISCONNECTS
-        console.log('Disconnect / Online:', controller.online);
+        console.log('Disconnect (' + client.id + ') / Online:', controller.online);
         //client.send({ message: 'User Disconnected: {0}'.format(client.id) });
         //controller.send({ message: 'Disconnect user: {0}\nOnline: {1}'.format(client.id, controller.online) });
         controller.send({command: 'users', users: controller.online});
@@ -146,14 +172,13 @@ function socket_homepage() {
     controller.on('message', function(client, message) {
 
         var command = message.command;
-        console.log("Command: " + command);
+        console.log("Command received by " + client.id + ": " + command);
 
         if (command == 'viewport') {
             controller.send({command:'viewport', translation: message.translation, zoom: message.zoom}, [], [client.id]);
             translation = message.translation;
             zoom = message.zoom;
         }
-
         if (command == 'start') {
             console.log("Starting...");
             play = true;
@@ -179,15 +204,44 @@ function socket_homepage() {
             var box = {command: 'initialize', bodies: initBodies, running: play};
             controller.send(box);
         }
+        if (command == 'rename') {
+
+            var index = message.index;
+            var name = message.name;
+
+            if (userbase.nameCheck(name)) {
+                userbase.rename(index,name);
+                client.send({command: 'updateuser', name: name, type: null, index: null});
+                console.log("Renamed: " + client.id + " --> " + name);
+                client.send({command: 'message', text: client.id + " renamed to " + name + "."});
+                client.id = name;
+            }
+            else {
+                console.log("Rename failed: Name taken.");
+            }
 
 
-
-        if (typeof(message.username) !== 'undefined') {
-            //var old = client.id;
-            //client.id = message.username;
-            //controller.send({ message: 'rename: ' + old + ', new: ' + client.id });
-            return;
         }
+        if (command == 'requesttype') {
+
+            var index = message.index;
+            var type = message.type;
+            var key = message.key;
+
+            if (userbase.setType(index,type,key)) {
+                client.send({command: 'updateuser', name: null, type: type, index: null});
+                console.log("Updated type: " + client.id + " now has permission level " + type + ".");
+            }
+            else {
+                console.log("Type update denied: Incorrect admin key.");
+            }
+        }
+        if (command == 'send') {
+            var text = message.text;
+            controller.send({command: 'chat', sender: client.id, text: text});
+        }
+
+
 
     });
 
@@ -198,7 +252,11 @@ function socket_homepage() {
     });
 
     controller.on('start', function(client, message) {
+<<<<<<< HEAD
         console.log("You just started this b!");
+=======
+
+>>>>>>> usertypes
     });
 
 

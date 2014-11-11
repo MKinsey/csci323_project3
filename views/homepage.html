@@ -15,14 +15,14 @@
 
     <!--jQuery-->
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-    
+
     <!--Angular-->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-route.min.js">
 
-    <!--D3-->
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-	
+        <!--D3-->
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
     <!--JS-->
     <script src="/js/d3.min.js"></script>
     <script src="/js/orbit.min.js"></script>
@@ -40,12 +40,17 @@
     <div class="page-header">
         <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
         <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
+        <span id="userinfo" class="lead" >You: <b><ng-pluralize ng-bind="name"></ng-pluralize></b> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
         <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.</div>
     </div>
 
     <div class="row">
         <div class="col-md-8">
+<<<<<<< HEAD
           <d3-bodies running="running" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="0.5" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
+=======
+            <d3-bodies running="running" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="1" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
+>>>>>>> usertypes
             <div class="row panel panel-default" ng-hide="currentBody==null">
                 <div class="col-md-6 panel-body" style="text-align: center;">
                     <div class="col-md-2">
@@ -73,156 +78,207 @@
             </div>
         </div>
         <div class="col-md-4">
-            <button name="open">CONNECT</button>
-            <button name="close" disabled="disabled">DISCONNECT</button>
-            <button name="start" disabled="disabled">START</button>
-            <button name="stop" disabled="disabled">STOP</button>
-            <button name="reset" disabled="disabled">RESET</button>
-            <button name="center" ng-click="viewport.zoom = 1; viewport.translation = [0,0]">CENTER</button>
+            <button name="start" style="width: 33%;" disabled="disabled" ng-click="start()" >START</button>
+            <button name="stop"  style="width: 33%;" disabled="disabled" ng-click="stop()"  >STOP</button>
+            <button name="reset" style="width: 33%;" disabled="disabled" ng-click="reset()" >RESET</button>
             <br>
-            <input ng-model="viewport.zoom" type="range" max="10" min="0.1" step="0.1" />
+            <input ng-model="viewport.zoom" readonly = "readonly" type="range" max="10" min="0.1" step="0.1" />
             <input ng-model="viewport.translation[0]" type="number" class="form-control" />
             <input ng-model="viewport.translation[1]" type="number" class="form-control" />
+            <button name="center" style="width: 100%;" ng-click="viewport.zoom = 1; viewport.translation = [0,0]">CENTER</button>
             <br>
-            <textarea id="console" style="width: 100%;height: 200px; color: white; background-color: black;" readonly="readonly"></textarea>
+            <textarea id="console" style="font-size: 12px; width: 100%;height: 200px; color: white; background-color: black; resize: none" readonly="readonly"></textarea>
+            <br>
+            <input name="input" type="text" style="width: 100%;height: 25px; color: white; background-color: black;" >
+            <br>
+            <button name="send"   style="width: 33%;"ng-click="send()" >SEND</button>
+            <button name="rename" style="width: 33%;"ng-click="rename()" >RENAME</button>
+            <button name="admin"  style="width: 33%;"disabled="disabled" ng-click="admin()" >PLAY GOD</button>
         </div>
     </div>
 </div> <!-- /container -->
 
 <script type="text/javascript">
+    watchProblem = false;
+    angularsocket = null;
+    minNameLength = 4;
+    consoleArea = $('#console');
+    consoleText = "";
+    socket = null;
+    inputArea = $('#input');
+    userinfo = $('#userinfo');
 
-    var consoleArea = $('#console');
-    var consoleText = "";
-    var socket = null;
 
-    var bodyList = {};
+    orbitable.controller('BodyCtrl', ['$scope',
+        function($scope) {
+            $scope.viewport = {};
+            $scope.viewport.zoom = 1;
+            $scope.running = false;
+            $scope.viewport.translation = [0,0];
+            $scope.connected = false;
+            $scope.showreconnect = false;
+            $scope.currentBody = null;
+            $scope.name = null;
+            $scope.type = null;
+            $scope.index = null;
 
-    $(document).ready(function() {
-        // WHEN BUTTON IS CLICKED
-        $('button').bind('click', function() {
+            $scope.users = 1;
 
-            log("Button pressed: " + this.name);
-            // CHECK NAME AND TRIGGER CORRESPONDING FUNCTION
+            $scope.connect = function() {
+                angularsocket = new WebSocket('@{config['websocket-url']}');
+                angularsocket.onopen = function() { console.log("connected"); $scope.$apply(function() {$scope.connected = true; $scope.showreconnect = false;}); };
+                angularsocket.onclose = function() { console.log("disconnected"); $scope.$apply(function() {$scope.showreconnect = true; $scope.users = 0;}); };
+                angularsocket.onmessage = function(e) {
+                    var message = JSON.parse(decodeURIComponent(e.data));
+                    var command = message.command;
+                    if (command === 'initialize') {
+                        $scope.$apply(function () {
+                            var bodies = JSON.parse(decodeURIComponent(e.data)).bodies;
+                            bodyData = [];
+                            for (var i = 0; i < bodies.length; i++) {
+                                var body = bodies[i];
+                                var bodyStruct = {};
+                                bodyStruct['id'] = body[0];
+                                bodyStruct['x'] = body[1];
+                                bodyStruct['y'] = body[2];
+                                bodyStruct['m'] = body[3];
+                                bodyData.push(bodyStruct);
+                            }
+                            $scope.bodies = bodyData;
+                            if ($scope.currentBody != null) {
+                                $scope.currentBody = $scope.bodies[$scope.currentBody.id];
+                            }
+                            $scope.running = JSON.parse(decodeURIComponent(e.data)).running;
+                        });
+                    } else if (command === 'update') {
+                        $scope.$apply(function () {
+                            var positions = JSON.parse(decodeURIComponent(e.data)).positions;
+                            for (var i = 0; i < positions.length; i++) {
+                                bodyData[i].x = positions[i][1];
+                                bodyData[i].y = positions[i][2];
+                            }
+                        });
+                    } else if (command === 'viewport') {
+                        watchProblem = true;
+                        $scope.$apply(function () {
+                            $scope.viewport = {zoom: JSON.parse(decodeURIComponent(e.data)).zoom, translation: JSON.parse(decodeURIComponent(e.data)).translation};
+                        });
+                    } else if (command === 'users') {
+                        $scope.$apply(function () {
+                            $scope.users = JSON.parse(decodeURIComponent(e.data)).users;
+                        });
+                    } else if (command === 'start') {
+                        $scope.$apply(function () {
+                            $scope.running = true;
+                        });
+                    } else if (command === 'stop') {
+                        $scope.$apply(function () {
+                            $scope.running = false;
+                        });
+                    } else if (command === 'updateuser') {
+                        $scope.$apply(function () {
+                            if (message.name != null) {
+                                $scope.name = message.name;
+                            }
+                            if (message.type != null) {
+                                $scope.type = message.type;
+                            }
+                            if (message.index != null) {
+                                $scope.index = message.index;
+                            }
+                        });
+                    }
 
-            if (this.name === 'start') {
-                send('start');
-                return;
-            }
-            if (this.name === 'stop') {
-                send('stop');
-                return;
-            }
-            if (this.name === 'reset') {
-                send('reset');
-                return;
-            }
+                    else if (command === 'message') {
+                        $scope.$apply(function () {
+                            log(message.text);
+                        });
+                    } else if (command === 'chat') {
+                        $scope.$apply(function () {
+                            log(message.sender + ": " + message.text);
+                        });
+                    }
 
-            if (this.name === 'open') {
-                connect();
-                return;
-            }
+                }
 
-            if (this.name === 'close') {
-                disconnect();
-            }
-        });
-    });
 
-    function connect() {
+            };
 
-        if (socket !== null)
-            return;
-        $('button[name="open"]').attr('disabled', true);
-        $('button[name="close"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
-        socket = new WebSocket('@{config['websocket-url']}');
+            $scope.connect();
 
-        socket.onopen = function() {
+            $scope.start = function() {
+                //log(">START");
+                angularSend({command: 'start'});
+            };
+            $scope.stop = function() {
+                //log(">STOP");
+                angularSend({command: 'stop'});
+            };
+            $scope.reset = function() {
+                //log(">RESET");
+                angularSend({command: 'reset'});
+            };
+            $scope.send = function() {
+                var text = $('input[name="input"]').val().toString();
+                //log(">SEND " + text);
+                angularSend({command: 'send', text: text});
+                $('input[name="input"]').val("");
+            };
+            $scope.rename = function() {
+                var text =  $('input[name="input"]').val().toString();
+                if (text.length >= minNameLength) {
+                    //log(">RENAME " + text);
+                    angularSend({command: 'rename', index: $scope.index, name: text});
+                    if ($scope.type == 0) {
+                        angularSend({command: 'requesttype', index: $scope.index, type: 1, key: null});
+                    }
+                    $('input[name="input"]').val("");
+                }
+                else {
+                    log("Name must be " + minNameLength + " characters or longer!");
+                }
 
-        };
+            };
+            $scope.admin = function() {
+                if ($scope.type == 1) {
+                    var key = window.prompt("Admin Key:","");
+                    angularSend({command: 'requesttype', index: $scope.index, type: 2, key: key});
+                }
+            };
 
-        socket.onmessage = function(e) {
-
-            // This is where we receive the data
-
-            var toConsole = "";
-
-            var command = JSON.parse(decodeURIComponent(e.data)).command;
-            if (command === 'message') {
-                var msg = JSON.parse(decodeURIComponent(e.data)).message;
-                log("Server Message: " + msg);
-            }
-            if (command === 'update') {
-                updatePositions(JSON.parse(decodeURIComponent(e.data)).positions);
-            }
-            if (command === 'initialize') {
-                initializeBodies(JSON.parse(decodeURIComponent(e.data)).bodies);
-            }
-
-        };
-
-        socket.onclose = function(e) {
-            // e.reason ==> total.js client.close('reason message');
-        };
-    }
-
-    function send(com) {
-        log("Send command: " + com);
-
-        if (socket !== null) //  && msg.length > 0)
-            socket.send(encodeURIComponent(JSON.stringify({ command: com})));
-    }
-
-    function disconnect() {
-
-        // When disconnect button is pressed...
-
-        if (socket === null)
-            return;
-
-        $('button[name="close"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
-        $('button[name="open"]').attr('disabled', false);
-
-        socket.close();
-        socket = null;
-    }
-
-    function updatePositions(positions) {
-        // updates the position of each body in bodyList
-        for (var i = 0; i < positions.length; i++) {
-            bodyList[positions[i][0]][1] = positions[i][1];
-            bodyList[positions[i][0]][2] = positions[i][2];
-            log("Update > " + bodyToString(bodyList[positions[i][0]]));
-
+            $scope.$watch("viewport", function(newView) {
+                if(angularsocket.readyState != 0 && !watchProblem) angularSend({command: "viewport", translation: newView.translation, zoom: newView.zoom});
+                watchProblem = false;
+            }, true);
+            $scope.$watch("type", function() {
+                if ($scope.type == 0) {
+                    $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
+                    log("You now have view access.");
+                }
+                if ($scope.type == 1) {
+                    // TODO: active ability to add/modify bodies here
+                    $('button[name="admin"]').attr('disabled', false);
+                    $('button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
+                    log("You now have edit access.");
+                }
+                if ($scope.type == 2) {
+                    $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
+                    log("With great power comes great responsibility...");
+                }
+            }, true);
         }
-
-
-    }
-
-    function initializeBodies(initBodies)  {
-        // clears bodyList and then populates with new list of bodies
-        bodyList = {};
-        for (var i = 0; i < initBodies.length; i++) {
-            bodyList[initBodies[i][0]] = initBodies[i];
-            log("Initialize > " + bodyToString(bodyList[initBodies[i][0]]));
-        }
-    }
-
-    function updateCircles() {
-        //TODO: Update circle positions here.
-    }
-
-    function bodyToString(body) {
-        return "|id:" + body[0] + "|x:" + body[1] +"|y:" + body[2] +"|m:" + body[3] +"|c:" + body[4];
+    ]);
+    function angularSend(message) {
+        angularsocket.send(encodeURIComponent(JSON.stringify(message)));
     }
     function log(text) {
-
-        consoleText = text + "\n" + consoleText;
+        consoleText = "Orbot: " + text + "\n" + consoleText;
         consoleArea.val(consoleText);
         if (consoleText.length > 500) {consoleText = consoleText.substring(0,250);}
-        //console.val(text + '\n' + console.text().val());
     }
 
 </script>
+<<<<<<< HEAD
 
 <script type="text/javascript">
 watchProblem = false;
@@ -303,6 +359,8 @@ function($scope) {
 }
 ]);
 </script>
+=======
+>>>>>>> usertypes
 </body>
 </html>
 
