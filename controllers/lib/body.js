@@ -35,7 +35,7 @@ function Body(x, y, xx, yy, m, id) {
     this.fx = 0;
     this.fy = 0;
     this.m = m;
-    this.c = 0;
+    this.c = this.getColor();
     this.id = id;
 }
 
@@ -88,6 +88,10 @@ Body.prototype.serializeInitial = function() {
 
 Body.prototype.toString = function() {
     return "ID: " + this.id + " (" + this.x + ", " + this.y + ") m=" + this.m;
+}
+
+Body.prototype.getColor = function() {
+    return '#'+Math.random().toString(16).substr(-6);
 }
 
 //Body.prototype.add = function(v) {
