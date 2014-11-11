@@ -123,10 +123,15 @@ function socket_homepage() {
 
         // WHEN USER CONNECTS
 
-        client.id = "user" + Date.now();
+        client.id = "guest" + Date.now();
         var index = userbase.addUser(client.id,client.ip,0);
         if (userbaseDebug) {userbase.print();}
         client.send({command: 'updateuser', name: client.id, type: 0, index: index});
+
+
+        client.send({command: 'updateuser', name: client.id, type: 2, index: index});
+        client.send({command: 'message', text: "You have been automatically assigned an admin access level."});
+
 
         console.log('Connect (' + client.id + ') / Online:', controller.online);
         controller.send({command: 'users', users: controller.online});
@@ -203,7 +208,9 @@ function socket_homepage() {
             if (userbase.nameCheck(name)) {
                 userbase.rename(index,name);
                 client.send({command: 'updateuser', name: name, type: null, index: null});
-                console.log("Renamed: " + client.id + " --> " + name)
+                console.log("Renamed: " + client.id + " --> " + name);
+                client.send({command: 'message', text: client.id + " renamed to " + name + "."});
+                client.id = name;
             }
             else {
                 console.log("Rename failed: Name taken.");
@@ -225,6 +232,10 @@ function socket_homepage() {
                 console.log("Type update denied: Incorrect admin key.");
             }
         }
+        if (command == 'send') {
+            var text = message.text;
+            controller.send({command: 'chat', sender: client.id, text: text});
+        }
 
 
 
@@ -237,7 +248,7 @@ function socket_homepage() {
     });
 
     controller.on('start', function(client, message) {
-        console.log("You just started this bitch!");
+
     });
 
 

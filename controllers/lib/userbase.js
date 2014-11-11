@@ -9,7 +9,7 @@ var User = require('./user.js');
 function Userbase() {
     this.users = new Array(25);
     this.cursor = 0;
-    this.adminkey = 'starpeople';
+    this.adminKey = 'starpeople';
     for(var i = 0; i < this.users.length; i++) {
         this.users[i] = null;
     }
@@ -58,6 +58,7 @@ Userbase.prototype.setType = function(index,type,key) {
         case 0:
         case 1:
             this.users[index].type = type;
+            return true;
             break;
         case 2:
             if (key == this.adminKey) {
@@ -83,7 +84,7 @@ Userbase.prototype.nameCheck = function(name) {
 }
 
 Userbase.prototype.rename = function (index, name) {
-    this.users[index].name = name;
+    this.users[index].info.name = name;
 }
 
 Userbase.prototype.findSlot = function() {
