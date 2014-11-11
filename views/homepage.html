@@ -89,6 +89,7 @@
 
 <script type="text/javascript">
 watchProblem = false;
+watchBodyProblem = true;
 angularsocket = null;
 orbitable.controller('BodyCtrl', ['$scope',
 function($scope) {
@@ -165,6 +166,14 @@ function($scope) {
                             bodyData[i].y = positions[i][2];
                         }
                     });
+            } else if (command === 'edit') {
+                watchBodyProblem = true;
+                $scope.$apply(function() {
+                        var body = JSON.parse(decodeURIComponent(e.data)).body;
+                        bodyData[body.id].x = body.x;
+                        bodyData[body.id].y = body.y;
+                        bodyData[body.id].m = body.m;
+                    });
             } else if (command === 'viewport') {
                 watchProblem = true;
                 $scope.$apply(function() {
@@ -189,8 +198,17 @@ function($scope) {
     $scope.connect();
 
     $scope.$watch("viewport", function(newView) {
-           if(angularsocket.readyState != 0 && !watchProblem) angularsocket.send(encodeURIComponent(JSON.stringify({command: "viewport", translation: newView.translation, zoom: newView.zoom})));
+           if(angularsocket.readyState != 0 && !watchProblem) {
+               angularsocket.send(encodeURIComponent(JSON.stringify({command: "viewport", translation: newView.translation, zoom: newView.zoom})));
+           }
            watchProblem = false;
+        }, true);
+
+    $scope.$watch("bodies", function(newBodies) {
+           if(!$scope.running && !watchBodyProblem && $scope.currentBody != null) {
+                angularsocket.send(encodeURIComponent(JSON.stringify({command: "edit", body: $scope.currentBody})));
+           }
+           watchBodyProblem = false;
         }, true);
 }
 ]);
