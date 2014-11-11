@@ -198,7 +198,7 @@ function socket_homepage() {
     });
 
     controller.on('start', function(client, message) {
-        console.log("You just started this bitch!");
+        console.log("You just started this b!");
     });
 
 
