@@ -75,9 +75,9 @@
         <div class="col-md-4">
             <button name="open">CONNECT</button>
             <button name="close" disabled="disabled">DISCONNECT</button>
-            <button name="start" disabled="disabled">START</button>
-            <button name="stop" disabled="disabled">STOP</button>
-            <button name="reset" disabled="disabled">RESET</button>
+            <button name="start" ng-click="start()" disabled="disabled">START</button>
+            <button name="stop"  ng-click="stop()"  disabled="disabled">STOP</button>
+            <button name="reset" ng-click="reset()" disabled="disabled">RESET</button>
             <button name="center" ng-click="viewport.zoom = 1; viewport.translation = [0,0]">CENTER</button>
             <br>
             <input ng-model="viewport.zoom" type="range" max="10" min="0.1" step="0.1" />
@@ -97,36 +97,36 @@
 
     var bodyList = {};
 
-    $(document).ready(function() {
-        // WHEN BUTTON IS CLICKED
-        $('button').bind('click', function() {
-
-            log("Button pressed: " + this.name);
-            // CHECK NAME AND TRIGGER CORRESPONDING FUNCTION
-
-            if (this.name === 'start') {
-                send('start');
-                return;
-            }
-            if (this.name === 'stop') {
-                send('stop');
-                return;
-            }
-            if (this.name === 'reset') {
-                send('reset');
-                return;
-            }
-
-            if (this.name === 'open') {
-                connect();
-                return;
-            }
-
-            if (this.name === 'close') {
-                disconnect();
-            }
-        });
-    });
+//    $(document).ready(function() {
+//        // WHEN BUTTON IS CLICKED
+//        $('button').bind('click', function() {
+//
+//            log("Button pressed: " + this.name);
+//            // CHECK NAME AND TRIGGER CORRESPONDING FUNCTION
+//
+//            if (this.name === 'start') {
+//                send('start');
+//                return;
+//            }
+//            if (this.name === 'stop') {
+//                send('stop');
+//                return;
+//            }
+//            if (this.name === 'reset') {
+//                send('reset');
+//                return;
+//            }
+//
+//            if (this.name === 'open') {
+//                connect();
+//                return;
+//            }
+//
+//            if (this.name === 'close') {
+//                disconnect();
+//            }
+//        });
+//    });
 
     function connect() {
 
@@ -236,6 +236,9 @@ function($scope) {
     $scope.connected = false;
     $scope.showreconnect = false;
     $scope.currentBody = null;
+    $scope.name = null;
+    $scope.type = null;
+    $scope.index = null;
 
     $scope.users = 1;
 
@@ -244,7 +247,8 @@ function($scope) {
         angularsocket.onopen = function() { console.log("connected"); $scope.$apply(function() {$scope.connected = true; $scope.showreconnect = false;}); };
         angularsocket.onclose = function() { console.log("disconnected"); $scope.$apply(function() {$scope.showreconnect = true; $scope.users = 0;}); };
         angularsocket.onmessage = function(e) {
-            var command = JSON.parse(decodeURIComponent(e.data)).command;
+            var message = JSON.parse(decodeURIComponent(e.data));
+            var command = message.command;
             if (command === 'initialize') {
                 $scope.$apply(function() {
                     var bodies = JSON.parse(decodeURIComponent(e.data)).bodies;
@@ -289,18 +293,39 @@ function($scope) {
                 $scope.$apply(function() {
                         $scope.running = false;
                     });
+            } else if (command === 'updateuser') {
+                $scope.$apply(function() {
+                    if (message.name  != null) {$scope.name  = message.name; }
+                    if (message.type  != null) {$scope.type  = message.type; }
+                    if (message.index != null) {$scope.index = message.index;}
+                });
             }
+
         }
     };
 
     $scope.connect();
 
+    function start() {
+        angularSend({command: 'start'});
+    }
+    function stop() {
+        angularSend({command: 'stop'});
+    }
+    function reset() {
+        angularSend({command: 'reset'});
+    }
+
     $scope.$watch("viewport", function(newView) {
-           if(angularsocket.readyState != 0 && !watchProblem) angularsocket.send(encodeURIComponent(JSON.stringify({command: "viewport", translation: newView.translation, zoom: newView.zoom})));
+           if(angularsocket.readyState != 0 && !watchProblem) angularSend({command: "viewport", translation: newView.translation, zoom: newView.zoom});
            watchProblem = false;
         }, true);
 }
 ]);
+function angularSend(socket,message) {
+    socket.send(encodeURIComponent(JSON.stringify(message)));
+}
+
 </script>
 </body>
 </html>
