@@ -11,8 +11,8 @@ var steps = 0;
 
 function Simulator() {
     this.bodies = new Array(2);
-    this.bodies[0] = new Body(  200,  50,  0,   0, 1000,0);        // Trivial example
-    this.bodies[1] = new Body( 100,  10,  0, 0.4, 10,1);
+    this.bodies[0] = new Body( 400, 250,  0,   0, 1000,0);
+    this.bodies[1] = new Body( 300, 210,  0, 0.5, 10,1);
     this.G = 6.673;      // Establish gravitational constant
     this.PI2 = Math.PI * 2;      // Establish this.PI2 constant
     this.outPositions = new Array(this.bodies.length);
@@ -54,7 +54,7 @@ Simulator.prototype.simulate = function() {
     deltaTime = timer.getTime() - frameTime;
     ping = ping * 0.9 + deltaTime * 0.1;
 
-    var box = { command: 'wait '};
+    var box = { command: 'wait', ping: ping};
 
     //console.log("deltaTime: " + deltaTime + " Ping: " + ping);
     if (ping < 25) {
@@ -62,7 +62,7 @@ Simulator.prototype.simulate = function() {
             this.bodies[c].applyForce(deltaTime / 1000);
             this.outPositions[c] = this.bodies[c].serializeUpdate();
         }
-        box = { command: 'update', positions: this.outPositions};
+        box = { command: 'update', positions: this.outPositions, ping: ping};
         // send to all without this client
     }
     //else {box = { command: 'message', message: 'Waiting for ping reduction: ' + ping};}
@@ -86,6 +86,8 @@ Simulator.prototype.getDistance = function(x1,y1,x2,y2) {
 }
 
 Simulator.prototype.reset = function() {
-    this.bodies[0] = new Body(  200,  50,  0,   0, 1000,0);        // Trivial example
-    this.bodies[1] = new Body( 100,  10,  0, 0.4, 10,1);
+
+    // TODO: should reset current state to this.initialState
+    this.bodies[0] = new Body( 400, 250,  0,   0, 1000,0);
+    this.bodies[1] = new Body( 300, 210,  0, 0.5, 10,1);
 }

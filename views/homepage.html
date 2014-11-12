@@ -40,7 +40,7 @@
     <div class="page-header">
         <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
         <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
-        <span id="userinfo" class="lead" >You: <b><ng-pluralize ng-bind="name"></ng-pluralize></b> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
+        <span id="userinfo" class="lead" >You: <b>{{name}}</b> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
         <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.</div>
     </div>
 
@@ -90,6 +90,9 @@
             <button name="send"   style="width: 33%;"ng-click="send()" >SEND</button>
             <button name="rename" style="width: 33%;"ng-click="rename()" >RENAME</button>
             <button name="admin"  style="width: 33%;"disabled="disabled" ng-click="admin()" >PLAY GOD</button>
+            <span id="pingLabel"  style ="font-size: 10px;" class="lead" >Ping: {{ping}} ms</span>
+            <br>
+            <span id="fpsLabel"   style ="font-size: 10px;" class="lead" >FPS: {{fps}}</span>
         </div>
     </div>
 </div> <!-- /container -->
@@ -117,6 +120,8 @@
             $scope.name = null;
             $scope.type = null;
             $scope.index = null;
+            $scope.ping = null;
+            $scope.fps = null;
 
             $scope.users = 1;
 
@@ -153,6 +158,8 @@
                                 bodyData[i].x = positions[i][1];
                                 bodyData[i].y = positions[i][2];
                             }
+                            $scope.ping =  Math.round(JSON.parse(decodeURIComponent(e.data)).ping*100)/100;
+                            $scope.fps = Math.round(10000/$scope.ping)/10;
                         });
                     } else if (command === 'viewport') {
                         watchProblem = true;
