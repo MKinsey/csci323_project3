@@ -255,7 +255,7 @@
                 if(angularsocket.readyState != 0 && !watchProblem) angularSend({command: "viewport", translation: newView.translation, zoom: newView.zoom});
                 watchProblem = false;
             }, true);
-            $scope.$watch("type", function() {
+            /*$scope.$watch("type", function() {
                 if ($scope.type == 0) {
                     $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
                     log("You now have view access.");
@@ -270,7 +270,7 @@
                     $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
                     log("With great power comes great responsibility...");
                 }
-            }, true);
+            }, true);*/
         }
     ]);
     function angularSend(message) {
