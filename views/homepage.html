@@ -106,7 +106,7 @@
     socket = null;
     inputArea = $('#input');
     userinfo = $('#userinfo');
-
+    oldTime = 0;
 
     orbitable.controller('BodyCtrl', ['$scope',
         function($scope) {
@@ -129,7 +129,7 @@
                 angularsocket = new WebSocket('@{config['websocket-url']}');
                 angularsocket.onopen = function() { console.log("connected"); $scope.$apply(function() {$scope.connected = true; $scope.showreconnect = false;}); };
                 angularsocket.onclose = function() { console.log("disconnected"); $scope.$apply(function() {$scope.showreconnect = true; $scope.users = 0;}); };
-                angularsocket.onmessage = function(e) {
+                angularsocket.onmessage = function(e) { oldTime = Date.now(); setTimeout(function() {
                     var message = JSON.parse(decodeURIComponent(e.data));
                     var command = message.command;
                     if (command === 'initialize') {
@@ -203,7 +203,7 @@
                         });
                     }
 
-                }
+                }, 40 - (Date.now() - oldTime))};
 
 
             };
