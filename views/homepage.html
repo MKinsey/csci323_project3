@@ -129,7 +129,7 @@
                 angularsocket = new WebSocket('@{config['websocket-url']}');
                 angularsocket.onopen = function() { console.log("connected"); $scope.$apply(function() {$scope.connected = true; $scope.showreconnect = false;}); };
                 angularsocket.onclose = function() { console.log("disconnected"); $scope.$apply(function() {$scope.showreconnect = true; $scope.users = 0;}); };
-                angularsocket.onmessage = function(e) { oldTime = Date.now(); setTimeout(function() {
+                angularsocket.onmessage = function(e) { var latency = 1000 - (Date.now() - oldTime); oldTime = Date.now(); console.log(latency); setTimeout(function() {
                     var message = JSON.parse(decodeURIComponent(e.data));
                     var command = message.command;
                     if (command === 'initialize') {
@@ -203,7 +203,7 @@
                         });
                     }
 
-                }, 1000 - (Date.now() - oldTime))};
+                }, latency)};
 
 
             };
