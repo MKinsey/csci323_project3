@@ -159,7 +159,8 @@
                                 bodyData[i].y = positions[i][2];
                             }
                             $scope.ping =  Math.round(JSON.parse(decodeURIComponent(e.data)).ping*100)/100;
-                            $scope.fps = Math.round(10000/$scope.ping)/10;
+                            var framePing = Math.round(JSON.parse(decodeURIComponent(e.data)).framePing*100)/100;
+                            $scope.fps = Math.round(10000/framePing)/10;
                         });
                     } else if (command === 'viewport') {
                         watchProblem = true;

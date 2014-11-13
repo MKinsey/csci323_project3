@@ -24,16 +24,23 @@ var steps = 0;
 var translation = [0,0];
 var zoom = 1;
 
-
+var latency = 0;
 
 
 function step() {
     if (play) {
         steps += 1;
         //console.log("Step: " + steps);
-
-        controller.send(simulator.simulate());
-
+        console.log(latency);
+        if(latency >= 10) {
+            var data = simulator.simulate();
+            data.framePing = latency + data.ping;
+            controller.send(data);
+            latency = 0;
+        } else {
+            var data = simulator.simulate();
+            latency += data.ping;
+        }
         setTimeout(step, 5);
     }
 
