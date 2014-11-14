@@ -280,7 +280,7 @@ function($scope) {
            if(angularsocket.readyState != 0 && !watchProblem) {
                angularSend({command: "viewport", translation: newView.translation, zoom: newView.zoom});
            }
-           watchProblem = false;
+           //watchProblem = false;
         }, true);
         
     $scope.$watch("type", function() {
