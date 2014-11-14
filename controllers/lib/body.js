@@ -27,8 +27,8 @@ Body.prototype.applyForce = function(dt,pdt) {
 
     this.xx += (this.fx/this.m)*dt;
     this.yy += (this.fy/this.m)*dt;
-    this.x += this.xx;
-    this.y += this.yy;
+    this.x += this.xx*dt;
+    this.y += this.yy*dt;
 
 }
 

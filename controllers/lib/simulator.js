@@ -12,8 +12,8 @@ var steps = 0;
 function Simulator() {
     this.bodies = new Array(2);
     this.bodies[0] = new Body( 400, 250,  0,   0, 1000,0);
-    this.bodies[1] = new Body( 300, 210,  0, 0.5, 10,1);
-    this.G = 6.673;      // Establish gravitational constant
+    this.bodies[1] = new Body( 300, 210,  0, 80, 10,1);
+    this.G = 667.3;      // Establish gravitational constant
     this.PI2 = Math.PI * 2;      // Establish this.PI2 constant
     this.outPositions = new Array(this.bodies.length);
     //TODO this.initialState = new State(.....);
