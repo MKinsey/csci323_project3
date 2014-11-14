@@ -101,6 +101,15 @@ function socket_homepage() {
             translation = message.translation;
             zoom = message.zoom;
         }
+
+        if (command == 'edit') {
+            bodies[message.body.id].x = message.body.x;
+            bodies[message.body.id].y = message.body.y;
+            bodies[message.body.id].m = message.body.m;
+
+            controller.send({command:'edit', body: message.body}, [], [client.id]);
+        }
+
         if (command == 'start') {
             console.log("Starting...");
             play = true;
