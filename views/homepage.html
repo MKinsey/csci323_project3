@@ -212,7 +212,7 @@ function($scope) {
                         $scope.running = false;
                     });
             } else if (command === 'updateuser') {
-                $scope.apply(function() {
+                $scope.$apply(function() {
                     if (message.name != null) {
                         $scope.name = message.name;
                     }
