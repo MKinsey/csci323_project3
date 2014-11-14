@@ -78,7 +78,6 @@
             <button name="start" ng-click="start()" ng-disabled="running || !connected">START</button>
             <button name="stop" ng-click="stop()" ng-disabled="!running || !connected">STOP</button>
             <button name="reset" ng-click="reset()" ng-disabled="!connected">RESET</button>
-            <button name="center" ng-click="viewport.zoom = 1; viewport.translation = [0,0]">CENTER</button>
             <br>
             <input ng-model="viewport.zoom" readonly="readonly" type="range" max="10" min="0.1" step="0.1" />
             <input ng-model="viewport.translation[0]" type="number" class="form-control" />
