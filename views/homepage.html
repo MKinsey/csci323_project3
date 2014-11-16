@@ -48,19 +48,19 @@
 				<div class="col-md-4">
                 <div class="menu" style="padding: 10%;">
 
-                    <button class="btn btn-default btn-lg" name="start" ng-click="start()" ng-disabled="running || !connected" style="padding:3%">
+                    <button class="btn btn-default btn-lg" name="start" ng-click="start()" ng-disabled="running || !connected" style="padding:3%; width:25%;">
                         <span class="glyphicon glyphicon-play" style="padding: 5%;"> </span>  
                     </button>
 
-                    <button class="btn btn-default btn-lg" name="stop" ng-click="stop()" ng-disabled="!running || !connected" style="padding:3%">
+                    <button class="btn btn-default btn-lg" name="stop" ng-click="stop()" ng-disabled="!running || !connected" style="padding:3%; width:25%;">
                         <span class="glyphicon glyphicon-pause" style"padding: 5%;"> </span>
                     </button>
 
-                    <button class="btn btn-default btn-lg" name="reset" ng-click="reset()" ng-disabled="!connected" style="padding:3%">
+                    <button class="btn btn-default btn-lg" name="reset" ng-click="reset()" ng-disabled="!connected" style="padding:3%; width:25%;">
                         <span class="glyphicon glyphicon-repeat" style="padding: 5%;"> </span>    
                     </button>
 
-                    <button class="btn btn-default btn-lg" name="add" ng-click"add()" ng-disabled="running" style="padding:3%">
+                    <button class="btn btn-default btn-lg" name="add" ng-click"add()" ng-disabled="running" style="padding:3%; width:25%;">
                         <span class="glyphicon glyphicon-plus" style="padding: 5%;"> </span> 
                     </button>
 
@@ -70,6 +70,7 @@
 	
     <div class="row">
         <div class="col-md-12">
+        <hr>
             <d3-bodies running="running" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="0.5" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
             <div class="row panel panel-default" ng-hide="currentBody==null">
                 <div class="col-md-6 panel-body" style="text-align: center;">
@@ -251,12 +252,20 @@ function($scope) {
                 $scope.$apply(function() {
                     log(message.sender + ": " + message.text);
                 });
+            } else if (command === 'add') {
+                $scope.$apply(function() {
+                    log("add pressed");
+                })
             }
         };
     };
     
     $scope.stop = function() {
         angularSend({ command: 'stop' });
+    };
+
+    $scope.add = function() {
+        angularSend({ command: 'add'});
     };
 
     $scope.start = function() {
@@ -306,17 +315,17 @@ function($scope) {
         
     $scope.$watch("type", function() {
         if ($scope.type == 0) {
-            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
+            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"],button[name="add"]').attr('disabled', true);
             log("You now have view access.");
         }
         if ($scope.type == 1) {
             // TODO: active ability to add/modify bodies here
-            $('button[name="admin"]').attr('disabled', false);
+            $('button[name="admin"],button[name="add"]').attr('disabled', false);
             $('button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
             log("You now have edit access.");
         }
         if ($scope.type == 2) {
-            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
+            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"],button[name="add"]').attr('disabled', false);
             log("With great power comes great responsibility...");
         }
     }, true);
