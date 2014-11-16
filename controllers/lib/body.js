@@ -8,41 +8,51 @@ function Body(x, y, xx, yy, m, id) {
     this.fx = 0;
     this.fy = 0;
     this.m = m;
+    this.r = Math.sqrt(this.m)+5;
     this.c = this.getColor();
     this.id = id;
+    this.delete = false;
 }
 
 Body.prototype.addForce = function(fx,fy) {
     this.fx += fx;
     this.fy += fy;
 
-}
+};
 
 Body.prototype.resetForce = function() {
     this.fx = 0;
     this.fy = 0;
-}
+};
 
 Body.prototype.applyForce = function(dt,pdt) {
 
     this.xx += (this.fx/this.m)*dt;
     this.yy += (this.fy/this.m)*dt;
-    this.x += this.xx;
-    this.y += this.yy;
+    this.x += this.xx*dt;
+    this.y += this.yy*dt;
 
-}
+};
 
 Body.prototype.serializeUpdate = function() {
     return [this.id, Math.round(this.x*100)/100, Math.round(this.y*100)/100];
-}
+};
 Body.prototype.serializeInitial = function() {
     return [this.id, Math.round(this.x*100)/100, Math.round(this.y*100)/100, this.m, this.c];
-}
+};
 
 Body.prototype.toString = function() {
     return "ID: " + this.id + " (" + this.x + ", " + this.y + ") m=" + this.m;
-}
+};
 
 Body.prototype.getColor = function() {
     return '#'+Math.random().toString(16).substr(-6);
-}
+};
+Body.prototype.setMass = function(m) {
+    this.m = m;
+    this.r = Math.sqrt(this.m)+5;
+};
+
+Body.prototype.clone = function() {
+    return new Body(this.x,this.y,this.xx,this.yy,this.m,this.id);
+};
