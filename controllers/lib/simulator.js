@@ -16,7 +16,7 @@ function Simulator() {
 
     this.bodies[0] = new Body( 300, 300,  0,   0, 1000,0);
 
-    this.bodies[1] = new Body( 150, 150, 40,  0, 10,1);
+    this.bodies[1] = new Body( 150, 150, 10,  0, 500,1);
     this.bodies[2] = new Body( 150, 450,  0,-40, 10,2);
     this.bodies[3] = new Body( 450, 450,-40,  0, 10,3);
     this.bodies[4] = new Body( 450, 150,  0, 40, 10,4);
