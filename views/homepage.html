@@ -20,16 +20,17 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-route.min.js">
 
-        <!--D3-->
-        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!--D3-->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
     <!--JS-->
     <script src="/js/d3.min.js"></script>
     <script src="/js/orbit.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    
     <!--ex-editable-->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <link href="/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
+    <script src="/angular-xeditable/dist/js/xeditable.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -46,9 +47,10 @@
 			        <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
 			        <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
 			        <span id="userinfo" class="lead" >
-                        You: <a href="#" id="username" data-type="text" data-placement="bottom" data-title="Enter username" data-value="megatron">
-                        <b>{{name}}</b></a> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
-			        
+                        <div ng-controller="user_ctrl">
+                            You: <a href="#" editable-text="userinfo"><b>{{name}}</b></a> 
+                            with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
+    			        </div>
                     <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.
 					</div>
             </div>
@@ -117,17 +119,22 @@
                     <div class="col-md-2">
                         <h5>Pos</h5>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="input-group">
                             <div class="input-group-addon">x</div>
                             <input ng-model="currentBody.x" ng-disabled="editDisabled()" type="number" placeholder="X position of Planet 2" style="width: 75px;" class="form-control"/>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="input-group">
                             <div class="input-group-addon">y</div>
                             <input ng-model="currentBody.y" ng-disabled="editDisabled()" type="number" placeholder="Y position of Planet 2" style="width: 75px;" class="form-control" />
                         </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-default btn-md" name="delete" ng-click="delete ()" ng-disabled="running" >
+                            <span class="glyphicon glyphicon-trash" > </span> 
+                        </button>                        
                     </div>
                 </div>
                 <div class="col-md-6 panel-body" style="text-align: center; border-left: 1px solid #ddd;">
@@ -135,6 +142,7 @@
                         <div class="input-group-addon">Mass:</div>
                         <input ng-model="currentBody.m" ng-disabled="editDisabled()" type="number" min="0" placeholder="Mass of Planet 1" class="form-control" />
                     </div>
+
                 </div>
             </div></div>
         </div>
@@ -169,6 +177,12 @@ $('#popover').popover({
     }
 });
 
+orbitable.controller('user_ctrl', function($scope) {
+  $scope.userinfo = {
+    name: 'megatron'
+  };
+});
+
 orbitable.controller('BodyCtrl', ['$scope',
 function($scope) {
     $scope.viewport = {};
@@ -188,15 +202,7 @@ function($scope) {
 
     $scope.users = 1;
 
-    $('#username').editable({
-        type: 'text',
-        title: 'Enter username',
-        success: function(response, newValue) {
-            $scope.$apply(function() {
-                $scope.rename(newValue);
-            });
-        }
-    });
+
     
     function angularSend(message) {
         angularsocket.send(encodeURIComponent(JSON.stringify(message)));
@@ -363,7 +369,6 @@ function($scope) {
         }
         
     };
-    
 
 
     $scope.admin = function() {
