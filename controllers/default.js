@@ -166,6 +166,12 @@ function socket_homepage() {
             controller.send({command: 'chat', sender: client.name, text: text});
         }
 
+        if (command == 'add') {
+            var info = message.info;
+            simulator.addBody(info[0],info[1],info[2],info[3],info[4],info[4]);   //(x,y,xx,yy,m,userID)
+            initialize(controller);
+        }
+
 
 
     });

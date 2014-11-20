@@ -45,8 +45,12 @@ Body.prototype.serializeInitial = function() {
 };
 
 Body.prototype.toString = function() {
-    return "ID: " + this.bodyID + " (" + this.x + ", " + this.y + ") m=" + this.m;
+    return "ID: " + this.bodyID + "\tPosition: (" + this.x + "," + this.y + ")" + "\tVelocity: (" + this.xx + "," + this.yy + ")" + "\tMass: " + this.m + "\tUserID: " + this.userID ;
 
+};
+
+Body.prototype.print = function() {
+    console.log(this.toString());
 };
 
 Body.prototype.getColor = function() {

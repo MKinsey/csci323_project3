@@ -95,7 +95,7 @@ Simulator.prototype.simulate = function() {
         }
     }
 
-    this.removeNulls(); // REMOVE ALL NULLIFIED (via collision) BODIES
+    if (bodyDeleted) {this.removeNulls();} // REMOVE ALL NULLIFIED (via collision) BODIES
 
     timer = new Date();
     deltaTime = timer.getTime() - frameTime; // TIME KEEPING STUFF
@@ -171,6 +171,9 @@ Simulator.prototype.destroyBody = function(bodyID) {
 
 Simulator.prototype.removeNulls = function() {
 
+    console.log("BEFORE");
+    this.printState();
+
     var nullCount = 0;
     for(var a = 0; a < this.bodies.length; a++) {
         if (this.bodies[a] == null) {nullCount += 1;}
@@ -188,11 +191,27 @@ Simulator.prototype.removeNulls = function() {
 
     this.bodies = newList;
 
+    console.log("AFTER");
+    this.printState();
+
     // pip install fabric
     // fab branch: [branch name]
 
 };
+Simulator.prototype.printState = function() {
 
+    console.log("-- CURRENT STATE --");
+    for(var i = 0; i < this.bodies.length; i++) {
+        if (this.bodies[i] != null) {
+            this.bodies[i].print();
+        }
+        else {
+            console.log("ID: " + i + "\t (null)");
+        }
+    }
+    console.log("");
+
+};
 
 Simulator.prototype.reset = function() {
 
