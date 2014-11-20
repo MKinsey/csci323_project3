@@ -68,11 +68,11 @@
                         <span class="glyphicon glyphicon-plus" style="padding: 5%;"> </span> 
                     </button>
 
-                    <button class="btn btn-default btn-lg" name="save" ng-click="save()" ng-disabled="running" >
+                    <button class="btn btn-default btn-lg" name="save" ng-click="save()" ng-disabled="running || type < 2" >
                         <span class="glyphicon glyphicon-save" style="padding: 5%;"> </span> 
                     </button>
                     
-                    <button class="btn btn-default btn-lg" name="open" ng-click="load()" ng-disabled="running" >
+                    <button class="btn btn-default btn-lg" name="open" ng-click="load()" ng-disabled="running || type < 2" >
                         <span class="glyphicon glyphicon-open" style="padding: 5%;"> </span> 
                     </button>
 
