@@ -168,7 +168,7 @@ $('#username').editable({
    type: 'text',
     title: 'Enter username',
     success: function(response, newValue) {
-        $scope.rename()
+        $scope.rename(newValue);
     }
 });
 
@@ -335,15 +335,14 @@ function($scope) {
         $('input[name="input"]').val("");
     };
     
-    $scope.rename = function() {
-        var text =  $('input[name="name_input"]').val().toString();
+    $scope.rename = function(new_name) {
+        var text =  new_name;
         if (text.length >= minNameLength) {
-            //log(">RENAME " + text);
+
             angularSend({command: 'rename', index: $scope.index, name: text});
             if ($scope.type == 0) {
                 angularSend({command: 'requesttype', index: $scope.index, type: 1, key: null});
             }
-            $('input[name="input"]').val("");
         }
         else {
             log("Name must be " + minNameLength + " characters or longer!");
