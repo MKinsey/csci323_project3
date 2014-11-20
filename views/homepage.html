@@ -27,6 +27,9 @@
     <script src="/js/d3.min.js"></script>
     <script src="/js/orbit.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <!--ex-editable-->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -42,9 +45,12 @@
 			<div class="col-md-8">
 			        <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
 			        <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
-			        <span id="userinfo" class="lead" >You: <a href="#" id="username" data-type="text" data-pk="1" data-title="Enter name" class="editable editable-click">
-                        <b>{{name}}</b></a> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
-			        <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.
+			        <span id="userinfo" class="lead" >
+                        You: <a href="#" id="username" data-type="text" data-placement="bottom" data-title="Enter username" data-value="megatron">
+                        <b>{{name}}</b></a> 
+                        with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
+			        
+                    <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.
 					</div>
             </div>
 
@@ -156,6 +162,14 @@ $('#popover').popover({
     },
     content: function() {
       return $("#popover-content").html();
+    }
+});
+
+$('#username').editable({
+   type: 'text',
+    title: 'Enter username',
+    success: function(response, newValue) {
+        $scope.rename()
     }
 });
 
@@ -323,7 +337,7 @@ function($scope) {
     };
     
     $scope.rename = function() {
-        var text =  $('input[name="input"]').val().toString();
+        var text =  $('input[name="name_input"]').val().toString();
         if (text.length >= minNameLength) {
             //log(">RENAME " + text);
             angularSend({command: 'rename', index: $scope.index, name: text});
