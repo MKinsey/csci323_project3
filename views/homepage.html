@@ -164,14 +164,6 @@ $('#popover').popover({
     }
 });
 
-$('#username').editable({
-   type: 'text',
-    title: 'Enter username',
-    success: function(response, newValue) {
-        $scope.rename(newValue);
-    }
-});
-
 orbitable.controller('BodyCtrl', ['$scope',
 function($scope) {
     $scope.viewport = {};
@@ -190,6 +182,16 @@ function($scope) {
     $scope.fps = null;
 
     $scope.users = 1;
+
+    $('#username').editable({
+        type: 'text',
+        title: 'Enter username',
+        success: function(response, newValue) {
+            $scope.$apply(function() {
+                $scope.rename(newValue);
+            });
+        }
+    });
     
     function angularSend(message) {
         angularsocket.send(encodeURIComponent(JSON.stringify(message)));
@@ -346,7 +348,6 @@ function($scope) {
     $scope.rename = function(new_name) {
         var text =  new_name;
         if (text.length >= minNameLength) {
-
             angularSend({command: 'rename', index: $scope.index, name: text});
             if ($scope.type == 0) {
                 angularSend({command: 'requesttype', index: $scope.index, type: 1, key: null});
