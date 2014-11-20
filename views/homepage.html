@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en" ng-app="orbitable">
 <head>
     <meta charset="utf-8">
@@ -26,6 +26,7 @@
     <!--JS-->
     <script src="/js/d3.min.js"></script>
     <script src="/js/orbit.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -41,31 +42,63 @@
 			<div class="col-md-8">
 			        <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
 			        <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
-			        <span id="userinfo" class="lead" >You: <b>{{name}}</b> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
+			        <span id="userinfo" class="lead" >You: <a href="#" id="username" data-type="text" data-pk="1" data-title="Enter name" class="editable editable-click">
+                        <b>{{name}}</b></a> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
 			        <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.
 					</div>
             </div>
-				<div class="col-md-4">
-                <div class="menu" style="padding: 10%;">
 
-                    <button class="btn btn-default btn-lg" name="start" ng-click="start()" ng-disabled="running || !connected" style="padding:3%; width:25%;">
-                        <span class="glyphicon glyphicon-play" style="padding: 5%;"> </span>  
+			<div class="col-md-4" >
+                <div class="btn btn-group" role="group" style="padding-top:5%;" >
+
+                     <button class="btn btn-default btn-lg" name="start" ng-click="start_stop()" >
+                        <span ng-class="{'glyphicon glyphicon-play': !running, 'glyphicon glyphicon-pause': running}" style="padding: 5%;"> </span>  
                     </button>
 
-                    <button class="btn btn-default btn-lg" name="stop" ng-click="stop()" ng-disabled="!running || !connected" style="padding:3%; width:25%;">
-                        <span class="glyphicon glyphicon-pause" style"padding: 5%;"> </span>
-                    </button>
-
-                    <button class="btn btn-default btn-lg" name="reset" ng-click="reset()" ng-disabled="!connected" style="padding:3%; width:25%;">
+                    <button class="btn btn-default btn-lg" name="reset" ng-click="reset()" ng-disabled="!connected" >
                         <span class="glyphicon glyphicon-repeat" style="padding: 5%;"> </span>    
                     </button>
 
-                    <button class="btn btn-default btn-lg" name="add" ng-click"add()" ng-disabled="running" style="padding:3%; width:25%;">
+                    <button class="btn btn-default btn-lg" name="add" ng-click="add()" ng-disabled="running" >
                         <span class="glyphicon glyphicon-plus" style="padding: 5%;"> </span> 
                     </button>
 
+                    <button class="btn btn-default btn-lg" name="save" ng-click="save()" ng-disabled="running" >
+                        <span class="glyphicon glyphicon-save" style="padding: 5%;"> </span> 
+                    </button>
+                    
+                    <button class="btn btn-default btn-lg" name="open" ng-click="load()" ng-disabled="running" >
+                        <span class="glyphicon glyphicon-open" style="padding: 5%;"> </span> 
+                    </button>
+
+                    <button class="btn btn-default btn-lg" name="reset"  ng-disabled="!connected" >
+                        <span class="glyphicon glyphicon-cog" style="padding: 5%;"> </span>    
+                    </button>
 				</div>
+                <input ng-model="viewport.zoom" type="range" max="10" min="0.1" step="0.1" style="padding:3%;" />
+                <div class="col-md-8">
+                    <div class="dropdown" style="width:100%;">
+                      <button id="dLabel" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                        chat box
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">                    
+                        <textarea id="console" style="font-size: 12px; width: 100%;height: 200px; resize: none" readonly="readonly"></textarea>
+                        <br>
+                        <input name="input" type="text" style="width: 75%;" >
+                        <button type="button" class="btn btn-default" name="send"   style="width: 25%;"ng-click="send()" >Send</button>
+                      </ul>
+                      <br>               
+                    </div>
                 </div>
+                <div class="col-md-4">
+                     <span id="pingLabel"  style="font-size: 11px;" class="lead" style="float:right;" >Ping: {{ping}} </span>
+                    <br>
+                    <span id="fpsLabel"   style="font-size: 11px;" class="lead" style="float:right;" >FPS: {{fps}}</span>                     
+                </div>
+
+
+            </div>
 	</div>
 	
     <div class="row">
@@ -97,25 +130,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-4">
-                               <br>
-                    <input ng-model="viewport.zoom" readonly="readonly" type="range" max="10" min="0.1" step="0.1" />
-                    <input ng-model="viewport.translation[0]" type="number" class="form-control" />
-                    <input ng-model="viewport.translation[1]" type="number" class="form-control" />
-                    <button name="center" style="width: 100%;" ng-click="viewport.zoom = 1; viewport.translation = [0,0]">CENTER</button>
-                    <br>
-                    <textarea id="console" style="font-size: 12px; width: 100%;height: 200px; color: white; background-color: black; resize: none" readonly="readonly"></textarea>
-                    <br>
-                    <input name="input" type="text" style="width: 100%;height: 25px; color: white; background-color: black;" >
-                    <br>
-                    <button name="send"   style="width: 33%;"ng-click="send()" >SEND</button>
-                    <button name="rename" style="width: 33%;"ng-click="rename()" >RENAME</button>
-                    <button name="admin"  style="width: 33%;"disabled="disabled" ng-click="admin()" >PLAY GOD</button>
-                    <span id="pingLabel"  style="font-size: 10px;" class="lead" >Ping: {{ping}} ms</span>
-                    <br>
-                    <span id="fpsLabel"   style="font-size: 10px;" class="lead" >FPS: {{fps}}</span>
+        <hr>
         </div>
     </div>
 </div> <!-- /container -->
@@ -129,6 +144,20 @@ consoleArea = $('#console');
 consoleText = "";
 inputArea = $('#input');
 userinfo = $('#userinfo');
+
+$(function () {
+  $('[data-toggle="popover"]').popover()
+});
+
+$('#popover').popover({ 
+    html : true,
+    title: function() {
+      return $("#popover-head").html();
+    },
+    content: function() {
+      return $("#popover-content").html();
+    }
+});
 
 orbitable.controller('BodyCtrl', ['$scope',
 function($scope) {
@@ -254,21 +283,31 @@ function($scope) {
                 });
             } else if (command === 'add') {
                 $scope.$apply(function() {
-                    log("add pressed");
+                    log("recived add!");
                 })
             }
         };
     };
     
+    $scope.start_stop = function() {
+        if($scope.running) {
+            $scope.stop();
+        } else {
+            $scope.start();
+        }
+    };
+
     $scope.stop = function() {
         angularSend({ command: 'stop' });
     };
 
     $scope.add = function() {
+        log("add pressed.");
         angularSend({ command: 'add'});
     };
 
     $scope.start = function() {
+        log("start");
         angularSend({ command: 'start' });
     };
 
@@ -299,6 +338,8 @@ function($scope) {
         
     };
     
+
+
     $scope.admin = function() {
         if ($scope.type == 1) {
             var key = window.prompt("Admin Key:","");

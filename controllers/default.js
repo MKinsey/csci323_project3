@@ -129,10 +129,6 @@ function socket_homepage() {
 
             initialize(controller);
         }
-        if (command == 'add') {
-            console.log("Adding Body...");
-            controller.send({command: 'add'});
-        }
 
         if (command == 'rename') {
 
