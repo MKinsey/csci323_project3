@@ -63,8 +63,8 @@ function socket_homepage() {
         client.send({command: 'updateuser', name: client.name, type: 0, index: index});
 
 
-        client.send({command: 'updateuser', name: client.name, type: 2, index: index});
-        client.send({command: 'message', text: "You have been automatically assigned an admin access level."});
+        //client.send({command: 'updateuser', name: client.name, type: 2, index: index});
+        //client.send({command: 'message', text: "You have been automatically assigned an admin access level."});
 
 
         console.log('Connect (' + client.name + ') / Online:', controller.online);
