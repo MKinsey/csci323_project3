@@ -129,6 +129,7 @@ function socket_homepage() {
 
             initialize(controller);
         }
+
         if (command == 'rename') {
 
             var index = message.index;
