@@ -58,7 +58,7 @@ function socket_homepage() {
         // WHEN USER CONNECTS
 
         client.name = "guest" + Date.now();
-        var index = userbase.addUser(client.name,client.ip,0);
+        var index = userbase.addUser(client.name,client.id,0);
         if (userbaseDebug) {userbase.print();}
         client.send({command: 'updateuser', name: client.name, type: 0, index: index});
 
@@ -168,7 +168,7 @@ function socket_homepage() {
 
         if (command == 'add') {
             var info = message.info;
-            simulator.addBody(info[0],info[1],info[2],info[3],info[4],info[4]);   //(x,y,xx,yy,m,userID)
+            simulator.addBody(info[0],info[1],info[2],info[3],info[4],info[5]);   //(x,y,xx,yy,m,userID)
             initialize(controller);
         }
 

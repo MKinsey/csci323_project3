@@ -51,7 +51,7 @@ Simulator.prototype.simulate = function() {
                         var rB = Math.sqrt(bodyB.m * 0.5) + 5;
 
                         // IF COLLISION
-                        if (r < Math.max(rA, rB)) {
+                        if (r < Math.max(rA, rB)*0.8) {
 
                             // TODO:
                             // For absorption, the mass should technically not be added until after

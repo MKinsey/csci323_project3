@@ -25,8 +25,8 @@ Userbase.prototype.print = function() {
     console.log("------------- ");
 };
 
-Userbase.prototype.addUser = function(name,ip,type) {
-    this.users[this.cursor] = new User(name,ip,type);
+Userbase.prototype.addUser = function(name,userID,type) {
+    this.users[this.cursor] = new User(name,userID,type);
     index = this.cursor;
     this.findSlot();
     return index;
