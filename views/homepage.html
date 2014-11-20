@@ -47,8 +47,7 @@
 			        <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
 			        <span id="userinfo" class="lead" >
                         You: <a href="#" id="username" data-type="text" data-placement="bottom" data-title="Enter username" data-value="megatron">
-                        <b>{{name}}</b></a> 
-                        with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
+                        <b>{{name}}</b></a> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
 			        
                     <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.
 					</div>
