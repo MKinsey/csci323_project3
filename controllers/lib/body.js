@@ -49,10 +49,21 @@ Body.prototype.toString = function() {
 
 };
 
+Body.prototype.cloneBody = function() {
+    x = this.x;
+    y = this.y;
+    xx = this.xx;
+    yy = this.yy;
+    m = this.m;
+    bodyID = this.bodyID;
+    userID = this.userID;
+    return new Body(x, y, xx, yy, m, bodyID, userID)
+}
+
 Body.prototype.print = function() {
     console.log(this.toString());
 };
 
 Body.prototype.getColor = function() {
     return '#'+Math.random().toString(16).substr(-6);
-}
+};

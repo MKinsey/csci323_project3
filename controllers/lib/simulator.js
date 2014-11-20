@@ -13,9 +13,7 @@ var n = 20;
 function Simulator() {
 
     this.bodies = new Array(6);
-
     this.bodies[0] = new Body( 300, 300,  0,   0, 1000,0);
-
     this.bodies[1] = new Body( 150, 150, 10,  0, 500,1);
     this.bodies[2] = new Body( 150, 450,  0,-40, 10,2);
     this.bodies[3] = new Body( 450, 450,-40,  0, 10,3);
@@ -25,10 +23,10 @@ function Simulator() {
     this.G = 667.3;                 // Establish gravitational constant
     this.PI2 = Math.PI * 2;         // Establish this.PI2 constant
 
+    this.initialState = new Array(this.bodies.length);
+    this.setInitialState();
+
     this.outPositions = new Array(this.bodies.length);
-
-
-    //TODO this.initialState = new State(.....);
 
 }
 
@@ -215,7 +213,16 @@ Simulator.prototype.printState = function() {
 
 Simulator.prototype.reset = function() {
 
-    // TODO: should reset current state to this.initialState
-    this.bodies[0] = new Body( 400, 250,  0,   0, 1000,0);
-    this.bodies[1] = new Body( 300, 210,  0, 0.5, 10,1);
+    this.bodies = new Array(this.initialState.length);
+    for(var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i] = this.initialState[i].cloneBody();
+    }
+
+};
+
+Simulator.prototype.setInitialState = function() {
+    this.initialState = new Array(this.bodies.length);
+    for(var i = 0; i < this.bodies.length; i++) {
+        this.initialState[i] = this.bodies[i].cloneBody();
+    }
 };
