@@ -36,9 +36,9 @@
 </head>
 
 <body>
-<div class="container" ng-controller="BodyCtrl">
+<div class="container-full" ng-controller="BodyCtrl">
 
-	<div class="row">
+	<div class="container"><div class="row">
 			<div class="col-md-8">
 			        <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
 			        <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
@@ -99,13 +99,13 @@
 
 
             </div>
-	</div>
+	</div></div>
 	
     <div class="row">
         <div class="col-md-12">
-        <hr>
-            <d3-bodies running="running" height-trim="260" min-zoom="0.1" max-zoom="10" size-factor="0.5" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
-            <div class="row panel panel-default" ng-hide="currentBody==null">
+        <hr style="margin-bottom: 0px">
+            <d3-bodies running="running" height-trim="175" min-zoom="0.1" max-zoom="10" size-factor="0.5" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
+            <div class="container"><div class="row panel panel-default" ng-hide="currentBody==null" style="position: absolute; bottom: -10px; left: 10%; right: 10%;">
                 <div class="col-md-6 panel-body" style="text-align: center;">
                     <div class="col-md-2">
                         <h5>Pos</h5>
@@ -129,11 +129,10 @@
                         <input ng-model="currentBody.m" ng-disabled="running" type="number" min="0" placeholder="Mass of Planet 1" class="form-control" />
                     </div>
                 </div>
-            </div>
-        <hr>
+            </div></div>
         </div>
     </div>
-</div> <!-- /container -->
+</div> <!-- /container-full -->
 
 <script type="text/javascript">
 watchProblem = false;
