@@ -13,7 +13,6 @@ function Userbase() {
     for(var i = 0; i < this.users.length; i++) {
         this.users[i] = null;
     }
-
 }
 
 Userbase.prototype.print = function() {

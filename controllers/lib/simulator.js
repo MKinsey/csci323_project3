@@ -29,6 +29,7 @@ function Simulator() {
 
 
     //TODO this.initialState = new State(.....);
+
 }
 
 Simulator.prototype.simulate = function() {

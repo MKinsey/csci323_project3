@@ -46,6 +46,7 @@ Body.prototype.serializeInitial = function() {
 
 Body.prototype.toString = function() {
     return "ID: " + this.bodyID + " (" + this.x + ", " + this.y + ") m=" + this.m;
+
 };
 
 Body.prototype.getColor = function() {
