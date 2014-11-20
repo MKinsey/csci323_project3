@@ -19,6 +19,7 @@
     <!--Angular-->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-route.min.js">
+
         <!--D3-->
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
@@ -106,74 +107,76 @@ consoleArea = $('#console');
 consoleText = "";
 inputArea = $('#input');
 userinfo = $('#userinfo');
+
 orbitable.controller('BodyCtrl', ['$scope',
-    function($scope) {
-        $scope.viewport = {};
-        $scope.viewport.zoom = 1;
-        $scope.running = false;
-        $scope.viewport.translation = [0,0];
-        $scope.connected = false;
-        $scope.showreconnect = false;
-        $scope.currentBody = null;
-        $scope.name = null;
-        $scope.type = null;
-        $scope.index = null;
-        $scope.ping = null;
-        $scope.fps = null;
-        $scope.users = 1;
+function($scope) {
+    $scope.viewport = {};
+    $scope.viewport.zoom = 1;
+    $scope.running = false;
+    $scope.viewport.translation = [0,0];
+    $scope.connected = false;
+    $scope.showreconnect = false;
+    $scope.currentBody = null;
+    $scope.name = null;
+    $scope.type = null;
+    $scope.index = null;
+    $scope.ping = null;
+    $scope.fps = null;
 
-        function angularSend(message) {
-            angularsocket.send(encodeURIComponent(JSON.stringify(message)));
-        }
-
-        function log(text) {
-            consoleText = text + "\n" + consoleText;
-            consoleArea.val(consoleText);
-            if (consoleText.length > 500) {consoleText = consoleText.substring(0,250);}
-        }
-
-        $scope.connect = function() {
-            angularsocket = new WebSocket('@{config['websocket-url']}');
-            angularsocket.onopen = function() {
-                console.log("connected");
-                $scope.$apply(function() {
+    $scope.users = 1;
+    
+    function angularSend(message) {
+        angularsocket.send(encodeURIComponent(JSON.stringify(message)));
+    }
+    
+    function log(text) {
+        consoleText = text + "\n" + consoleText;
+        consoleArea.val(consoleText);
+        if (consoleText.length > 500) {consoleText = consoleText.substring(0,250);}
+    }
+    
+    $scope.connect = function() {
+        angularsocket = new WebSocket('@{config['websocket-url']}');
+        angularsocket.onopen = function() { 
+            console.log("connected");
+            $scope.$apply(function() {
                     $scope.connected = true;
                     $scope.showreconnect = false;
                 });
-            };
-            angularsocket.onclose = function() {
-                console.log("disconnected");
-                $scope.$apply(function() {
+        };
+        angularsocket.onclose = function() {
+            console.log("disconnected");
+            $scope.$apply(function() {
                     $scope.connected = false;
                     $scope.showreconnect = true;
                     $scope.users = 0;
                 });
-            };
-            angularsocket.onmessage = function(e) {
-                var message = JSON.parse(decodeURIComponent(e.data));
-                var command = message.command;
-                if (command === 'initialize') {
-                    $scope.$apply(function() {
-                        var bodies = message.bodies;
-                        bodyData = [];
-                        for (var i = 0; i < bodies.length; i++) {
-                            var body = bodies[i];
-                            var bodyStruct = {};
-                            bodyStruct['id'] = body[0];
-                            bodyStruct['x'] = body[1];
-                            bodyStruct['y'] = body[2];
-                            bodyStruct['m'] = body[3];
-                            bodyStruct['c'] = body[4];
-                            bodyData.push(bodyStruct);
-                        }
-                        $scope.bodies = bodyData;
-                        if($scope.currentBody != null) {
-                            $scope.currentBody = $scope.bodies[$scope.currentBody.id];
-                        }
-                        $scope.running = message.running;
-                    });
-                } else if (command === 'update') {
-                    $scope.$apply(function() {
+        };
+        angularsocket.onmessage = function(e) {
+            var message = JSON.parse(decodeURIComponent(e.data));
+            var command = message.command;
+            if (command === 'initialize') {
+                $scope.$apply(function() {
+                    var bodies = message.bodies;
+                    bodyData = [];
+                    for (var i = 0; i < bodies.length; i++) {
+                        var body = bodies[i];
+                        var bodyStruct = {};
+                        bodyStruct['id'] = body[0];
+                        bodyStruct['x'] = body[1];
+                        bodyStruct['y'] = body[2];
+                        bodyStruct['m'] = body[3];
+                        bodyStruct['c'] = body[4];
+                        bodyData.push(bodyStruct);
+                    }
+                    $scope.bodies = bodyData;
+                    if($scope.currentBody != null) {
+                        $scope.currentBody = $scope.bodies[$scope.currentBody.id];
+                    }
+                    $scope.running = message.running;
+                });
+            } else if (command === 'update') {
+                $scope.$apply(function() {
                         var positions = message.positions;
                         for (var i = 0; i < positions.length; i++) {
                             bodyData[i].x = positions[i][1];
@@ -182,130 +185,134 @@ orbitable.controller('BodyCtrl', ['$scope',
                         $scope.ping = Math.round(message.ping*100)/100;
                         $scope.fps = Math.round(10000/$scope.ping)/10;
                     });
-                } else if (command === 'edit') {
-                    watchBodyProblem = true;
-                    $scope.$apply(function() {
+            } else if (command === 'edit') {
+                watchBodyProblem = true;
+                $scope.$apply(function() {
                         var body = message.body;
                         bodyData[body.id].x = body.x;
                         bodyData[body.id].y = body.y;
                         bodyData[body.id].m = body.m;
                     });
-                } else if (command === 'viewport') {
-                    watchProblem = true;
-                    $scope.$apply(function() {
+            } else if (command === 'viewport') {
+                watchProblem = true;
+                $scope.$apply(function() {
                         $scope.viewport = {zoom: message.zoom, translation: message.translation};
                     });
-                } else if (command === 'users') {
-                    $scope.$apply(function() {
+            } else if (command === 'users') {
+                $scope.$apply(function() {
                         $scope.users = message.users;
                     });
-                } else if (command === 'start') {
-                    $scope.$apply(function() {
+            } else if (command === 'start') {
+                $scope.$apply(function() {
                         $scope.running = true;
                     });
-                } else if (command === 'stop') {
-                    $scope.$apply(function() {
+            } else if (command === 'stop') {
+                $scope.$apply(function() {
                         $scope.running = false;
                     });
-                } else if (command === 'updateuser') {
-                    $scope.$apply(function() {
-                        if (message.name != null) {
-                            $scope.name = message.name;
-                        }
-                        if (message.type != null) {
-                            $scope.type = message.type;
-                        }
-                        if (message.index != null) {
-                            $scope.index = message.index;
-                        }
-                    });
-                } else if (command === 'message') {
-                    $scope.$apply(function() {
-                        log("Orbot: " + message.text);
-                    });
-                } else if (command === 'chat') {
-                    $scope.$apply(function() {
-                        log(message.sender + ": " + message.text);
-                    });
-                }
-            };
-        };
-
-        $scope.stop = function() {
-            angularSend({ command: 'stop' });
-        };
-        $scope.start = function() {
-            angularSend({ command: 'start' });
-        };
-        $scope.reset = function() {
-            angularSend({ command: 'reset' });
-        };
-
-        $scope.send = function() {
-            var text = $('input[name="input"]').val().toString();
-            //log(">SEND " + text);
-            angularSend({command: 'send', text: text});
-            $('input[name="input"]').val("");
-        };
-
-        $scope.rename = function() {
-            var text =  $('input[name="input"]').val().toString();
-            if (text.length >= minNameLength) {
-                //log(">RENAME " + text);
-                angularSend({command: 'rename', index: $scope.index, name: text});
-                if ($scope.type == 0) {
-                    angularSend({command: 'requesttype', index: $scope.index, type: 1, key: null});
-                }
-                $('input[name="input"]').val("");
-            }
-            else {
-                log("Name must be " + minNameLength + " characters or longer!");
-            }
-
-        };
-
-        $scope.admin = function() {
-            if ($scope.type == 1) {
-                var key = window.prompt("Admin Key:","");
-                angularSend({command: 'requesttype', index: $scope.index, type: 2, key: key});
+            } else if (command === 'updateuser') {
+                $scope.$apply(function() {
+                    if (message.name != null) {
+                        $scope.name = message.name;
+                    }
+                    if (message.type != null) {
+                        $scope.type = message.type;
+                    }
+                    if (message.index != null) {
+                        $scope.index = message.index;
+                    }
+                });
+            } else if (command === 'message') {
+                $scope.$apply(function() {
+                    log("Orbot: " + message.text);
+                });
+            } else if (command === 'chat') {
+                $scope.$apply(function() {
+                    log(message.sender + ": " + message.text);
+                });
             }
         };
+    };
+    
+    $scope.stop = function() {
+        angularSend({ command: 'stop' });
+    };
 
-        $scope.$watch("viewport", function(newView) {
-            if(angularsocket.readyState != 0 && !watchProblem) {
-                angularSend({command: "viewport", translation: newView.translation, zoom: newView.zoom});
-            }
-            watchProblem = false;
-        }, true);
+    $scope.start = function() {
+        angularSend({ command: 'start' });
+    };
 
-        $scope.$watch("type", function() {
+    $scope.reset = function() {
+        angularSend({ command: 'reset' });
+    };
+    
+    $scope.send = function() {
+        var text = $('input[name="input"]').val().toString();
+        //log(">SEND " + text);
+        angularSend({command: 'send', text: text});
+        $('input[name="input"]').val("");
+    };
+    
+    $scope.rename = function() {
+        var text =  $('input[name="input"]').val().toString();
+        if (text.length >= minNameLength) {
+            //log(">RENAME " + text);
+            angularSend({command: 'rename', index: $scope.index, name: text});
             if ($scope.type == 0) {
-                $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
-                log("You now have view access.");
+                angularSend({command: 'requesttype', index: $scope.index, type: 1, key: null});
             }
-            if ($scope.type == 1) {
-                // TODO: active ability to add/modify bodies here
-                $('button[name="admin"]').attr('disabled', false);
-                $('button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
-                log("You now have edit access.");
-            }
-            if ($scope.type == 2) {
-                $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
-                log("With great power comes great responsibility...");
-            }
+            $('input[name="input"]').val("");
+        }
+        else {
+            log("Name must be " + minNameLength + " characters or longer!");
+        }
+        
+    };
+    
+    $scope.admin = function() {
+        if ($scope.type == 1) {
+            var key = window.prompt("Admin Key:","");
+            angularSend({command: 'requesttype', index: $scope.index, type: 2, key: key});
+        }
+    };
+    
+    $scope.$watch("viewport", function(newView) {
+           if(angularsocket.readyState != 0 && !watchProblem) {
+               angularSend({command: "viewport", translation: newView.translation, zoom: newView.zoom});
+           }
+           watchProblem = false;
         }, true);
-        $scope.$watch("bodies", function(newBodies) {
-            if(!$scope.running && !watchBodyProblem && $scope.currentBody != null) {
+        
+    $scope.$watch("type", function() {
+        if ($scope.type == 0) {
+            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
+            log("You now have view access.");
+        }
+        if ($scope.type == 1) {
+            // TODO: active ability to add/modify bodies here
+            $('button[name="admin"]').attr('disabled', false);
+            $('button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
+            log("You now have edit access.");
+        }
+        if ($scope.type == 2) {
+            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', false);
+            log("With great power comes great responsibility...");
+        }
+    }, true);
+
+    $scope.$watch("bodies", function(newBodies) {
+           if(!$scope.running && !watchBodyProblem && $scope.currentBody != null) {
                 angularsocket.send(encodeURIComponent(JSON.stringify({command: "edit", body: $scope.currentBody})));
-            }
-            watchBodyProblem = false;
+           }
+           watchBodyProblem = false;
         }, true);
-
+        
         // begin
-
-        $scope.connect();
-    }
+        
+    $scope.connect();
+}
 ]);
 </script>
 </body>
 </html>
+
