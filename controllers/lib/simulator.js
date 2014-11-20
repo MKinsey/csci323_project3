@@ -12,13 +12,11 @@ var n = 20;
 
 function Simulator() {
 
-    this.bodies = new Array(6);
-    this.bodies[0] = new Body( 300, 300,  0,   0, 1000,0);
-    this.bodies[1] = new Body( 150, 150, 10,  0, 500,1);
-    this.bodies[2] = new Body( 150, 450,  0,-40, 10,2);
-    this.bodies[3] = new Body( 450, 450,-40,  0, 10,3);
-    this.bodies[4] = new Body( 450, 150,  0, 40, 10,4);
-    this.bodies[5] = new Body( 300,  50,  0, 40, 10,5);
+    this.bodies = new Array(3);
+    this.bodies[0] = new Body( 100, 300,  0,   0, 800,0); // SUN
+    this.bodies[1] = new Body( 400, 300,  0,  42.75, 10,1);   // EARTH
+    this.bodies[2] = new Body( 430, 300,  0,  55,  1,2);   // MOON
+
 
     this.G = 667.3;                 // Establish gravitational constant
     this.PI2 = Math.PI * 2;         // Establish this.PI2 constant
@@ -225,4 +223,5 @@ Simulator.prototype.setInitialState = function() {
     for(var i = 0; i < this.bodies.length; i++) {
         this.initialState[i] = this.bodies[i].cloneBody();
     }
+
 };
