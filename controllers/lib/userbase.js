@@ -7,7 +7,7 @@ module.exports = Userbase;
 var User = require('./user.js');
 
 function Userbase() {
-    this.users = new Array(25);
+    this.users = new Array(50);
     this.cursor = 0;
     this.adminKey = 'starpeople';
     for(var i = 0; i < this.users.length; i++) {

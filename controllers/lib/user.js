@@ -10,6 +10,6 @@ function User(name,ip,type) {
 }
 User.prototype.print = function() {
     console.log("\t" + this.info.name + " - " + this.info.ip + " - " + this.info.type);
-}
+};
 
 
