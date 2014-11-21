@@ -199,6 +199,8 @@ function socket_homepage() {
                         simulator.load(res.bodies);
                     }
                 });
+
+            initialize(controller);
         }
 
 
