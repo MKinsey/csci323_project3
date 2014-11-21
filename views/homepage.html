@@ -105,6 +105,8 @@
                      <ul class="dropdown-menu" role="menu" style="position: absolute; right: 0; left: 130px;">
                         <li style="text-align: center;"><input type="checkbox" ng-model="enableViewportSync"> enable viewport sync</li>
                         <li class="divider"></li>
+                        <li style="text-align: center;"><input type="checkbox" ng-model="enableAudio"> enable audio</li>
+                        <li class="divider"></li>
                         <li><a href="#" ng-click="admin()" ng-switch on="type"> <span ng-switch-when="2">lose</span><span ng-switch-default>gain</span> admin access</a></li>
                       </ul>              
                     
@@ -212,6 +214,7 @@ function($scope) {
     $scope.viewport = {};
     $scope.viewportOther = {};
     $scope.enableViewportSync = true;
+    $scope.enableAudio = true;
     $scope.viewport.zoom = 1;
     $scope.running = false;
     $scope.viewport.translation = [0,0];
@@ -250,7 +253,7 @@ function($scope) {
     function log(text) {
         consoleText = text + "\n" + consoleText;
         consoleArea.val(consoleText);
-        if (consoleText.length > 500) {consoleText = consoleText.substring(0,250);}
+        if (consoleText.length > 2000) {consoleText = consoleText.substring(0,1000);}
     }
 
     $scope.editDisabled = function() {
@@ -386,8 +389,10 @@ function($scope) {
     };
 
     $scope.playSound = function(source) {
-        $scope.audio.src = source;
-        $scope.audio.play();
+        if ($scope.enableAudio) {
+            $scope.audio.src = source;
+            $scope.audio.play();
+        }
     };
 
     $scope.add = function() {
@@ -459,6 +464,14 @@ function($scope) {
                 console.log("disable viewport sync");
             }
         });
+
+    $scope.$watch("enableAudio", function(enable) {
+        if(enable) {
+            console.log("enable audio");
+        } else {
+            console.log("disable audio");
+        }
+    });
         
     $scope.$watch("type", function() {
         if ($scope.type == 0) {
