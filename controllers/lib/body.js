@@ -66,21 +66,23 @@ Body.prototype.print = function() {
 };
 
 Body.prototype.getColor = function() { //TODO logic for when a bodies mass is updated.
-    if (m<100){ //asteroids
-        var colors = array('DarkGrey', 'DimGrey', 'LightSteelBlue', 'Silver', 'SlateGray');
+    
+    if (this.m<100){ //asteroids
+        var colors = ['DarkGrey', 'DimGrey', 'LightSteelBlue', 'Silver', 'SlateGray'];
         var color = colors[Math.floor(Math.random() * colors.length)];
     }
-    else if (m<500){ // planets
-        var colors = array('DarkOliveGreen', 'CornflowerBlue', 'LightSeaGreen', 'OliveDrab', 'RoyalBlue');
+    else if (this.m<1000){ // planets
+        var colors = ['DarkOliveGreen', 'CornflowerBlue', 'LightSeaGreen', 'OliveDrab', 'RoyalBlue'];
         var color = colors[Math.floor(Math.random() * colors.length)];
     }
-    else if (m<5000{ // stars
-        var colors = array('Orange', 'Gold', 'Crimson', 'FireBrick');
+    else if (this.m<10000){ // stars
+        var colors = ['Orange', 'Gold', 'Crimson', 'FireBrick'];
         var color = colors[Math.floor(Math.random() * colors.length)];
     }
     else{
         var color = '301241';
     }
+
     return color;
     //return '#'+Math.random().toString(16).substr(-6);
 };
