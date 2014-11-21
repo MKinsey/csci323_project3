@@ -35,7 +35,6 @@ Body.prototype.applyForce = function(dt,pdt) {
 
 Body.prototype.addMass = function(m) {
     this.m += m;
-
 };
 
 Body.prototype.serializeUpdate = function() {
@@ -65,22 +64,6 @@ Body.prototype.print = function() {
     console.log(this.toString());
 };
 
-Body.prototype.getColor = function() { //TODO logic for when a bodies mass is updated.
-    if (m<100){ //asteroids
-        var colors = array('DarkGrey', 'DimGrey', 'LightSteelBlue', 'Silver', 'SlateGray');
-        var color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    else if (m<500){ // planets
-        var colors = array('DarkOliveGreen', 'CornflowerBlue', 'LightSeaGreen', 'OliveDrab', 'RoyalBlue');
-        var color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    else if (m<5000{ // stars
-        var colors = array('Orange', 'Gold', 'Crimson', 'FireBrick');
-        var color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    else{
-        var color = '301241';
-    }
-    return color;
-    //return '#'+Math.random().toString(16).substr(-6);
+Body.prototype.getColor = function() {
+    return '#'+Math.random().toString(16).substr(-6);
 };
