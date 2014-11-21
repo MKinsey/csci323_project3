@@ -343,6 +343,9 @@ function($scope) {
                         $scope.name = message.name;
                     }
                     if (message.type != null) {
+                        if (message.type > $scope.type) {
+                            $scope.playSound($scope.audioTriple);
+                        }
                         $scope.type = message.type;
                     }
                     if (message.index != null) {
