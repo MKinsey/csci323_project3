@@ -46,8 +46,8 @@
 			        <h1>Orbitable<span style="font-weight: 200; color: #888;">.me</span></h1>
 			        <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
 			        <span id="userinfo" class="lead" >
-                        You: <a href="#" id="username" data-type="text" data-placement="bottom" data-title="Enter username" data-value="megatron">
-                        <b>{{name}}</b></a> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
+                        You: <a href="#" id="username" data-type="text" data-placement="bottom" data-title="Enter username" data-value="megatron" style="color: #000;">
+                        <b>{{name}}</b></a> with <a href="#" ng-click="admin()" ng-class="{'editable-click' : type>0}" style="color: #000;"><b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b></a> access</span>
 			        
                     <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.
 					</div>
@@ -89,8 +89,7 @@
                       </ul>              
                     
 				</div>
-                
-
+                <input type="checkbox" ng-model="enableViewportSync">
                 <input ng-model="viewport.zoom" type="range" max="10" min="0.1" step="0.1" style="padding:3%;" readonly="readonly" />
                 <div class="col-md-8">
                     <div class="dropdown" style="width:100%;">
@@ -392,6 +391,8 @@ function($scope) {
         if ($scope.type == 1) {
             var key = window.prompt("Admin Key:","");
             angularSend({command: 'requesttype', index: $scope.index, type: 2, key: key});
+        } else if ($scope.type == 2) {
+            angularSend({command: 'requesttype', index: $scope.index, type: 1});
         }
     };
     

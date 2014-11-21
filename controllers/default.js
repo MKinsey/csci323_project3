@@ -47,6 +47,8 @@ function view_usage() {
 function view_homepage() {
     var self = this;
     self.view('homepage');
+    var cookie = self.req.cookie('__orbitable_id');
+    if (!cookie) self.res.cookie('__orbitable_id', Date.now());
 }
 
 function socket_homepage() {
@@ -57,7 +59,7 @@ function socket_homepage() {
 
         // WHEN USER CONNECTS
 
-        client.name = "guest" + Date.now();
+        client.name = "guest" + client.cookie("__orbitable_id");
         var index = userbase.addUser(client.name,client.id,0);
         if (userbaseDebug) {userbase.print();}
         client.send({command: 'updateuser', name: client.name, type: 0, index: index});
