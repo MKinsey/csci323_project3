@@ -132,7 +132,7 @@ Simulator.prototype.initialize = function() {
 Simulator.prototype.load = function(b) {
     this.bodies = new Array(b.length);
     for(var i = 0; i < b.length; i++) {
-        this.bodies[i] = new Body( b[1], b[2],  0,   0, b[3], b[0]);;
+        this.bodies[i] = new Body( b[i][1], b[i][2],  0,   0, b[i][3], b[i][0]);;
     }
 };
 
