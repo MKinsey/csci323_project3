@@ -47,7 +47,7 @@
 			        <p class="lead"><ng-pluralize count="users" when="{'one': '1 user', 'other': '{} users'}"></ng-pluralize> online</p>
 			        <span id="userinfo" class="lead" >
                         You: <a href="#" id="username" data-type="text" data-placement="bottom" data-title="Enter username" data-value="megatron" style="color: #000;">
-                        <b>{{name}}</b></a> with <a href="#" ng-click="admin()" ng-class="{'editable-click' : type>0}" style="color: #000;"><b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b></a> access</span>
+                        <b>{{name}}</b></a> with <b><ng-pluralize count="type" when="{'0': 'view', '1': 'edit', '2': 'admin'}"></ng-pluralize></b> access</span>
 			        
                     <div ng-hide="!showreconnect" class="alert alert-danger">Blast! You've been disconnected somehow. <a href="#" ng-click="connect()" class="alert-link">Click here</a> to reconnect.
 					</div>
@@ -85,7 +85,7 @@
                      <ul class="dropdown-menu" role="menu" style="position: absolute; right: 0; left: 130px;">
                         <li style="text-align: center;"><input type="checkbox" ng-model="enableViewportSync"> enable viewport sync</li>
                         <li class="divider"></li>
-                        <li><a href="#" ng-click="admin()"> login</a></li>
+                        <li><a href="#" ng-click="admin()" ng-switch on="type"> <span ng-switch-when="2">lose</span><span ng-switch-default>gain</span> admin access</a></li>
                       </ul>              
                     
 				</div>
