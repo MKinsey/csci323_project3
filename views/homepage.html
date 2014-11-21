@@ -43,10 +43,17 @@
     padding-top: 5%;
     margin-left: 26px;
 }
+#chat-dropdown-menu {
+    width: 350px;
+    padding-bottom: 0;
+}
 @media screen and (min-width: 768px) and (max-width: 1199px) { 
     #main-controls {
         margin-left: -10px;
         width: 310px;
+    }
+    #chat-dropdown-menu {
+        width: 280px;
     }
 }
 </style>
@@ -109,7 +116,7 @@
                         chat box 
                         <span class="caret"></span>
                       </button>
-                      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" style="width: 350px; padding-bottom: 0;">                    
+                      <ul class="dropdown-menu" id="chat-dropdown-menu" role="menu" aria-labelledby="dLabel">                    
                         <textarea id="console" style="font-size: 12px; width: 100%;height: 200px; resize: none; border: none; padding: 10px; padding-left: 15px; padding-right: 15px; outline: none;" readonly="readonly"></textarea>
                         <br>
                         <form style="border-top: 1px solid #ddd; padding-top: 8px; padding-bottom: 8px; background: #f5f5f5; border-radius: 0px 0px 4px 4px;">
