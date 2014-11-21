@@ -256,6 +256,14 @@ function($scope) {
     $scope.editDisabled = function() {
         return $scope.running || !($scope.type > 1);
     };
+
+    $scope.save = function() {
+        angularSend({command: 'save'});
+    };
+
+    $scope.load = function() {
+        angularSend({command: 'load'});
+    };
     
     $scope.connect = function() {
         angularsocket = new WebSocket('@{config['websocket-url']}');

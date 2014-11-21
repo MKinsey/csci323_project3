@@ -129,6 +129,13 @@ Simulator.prototype.initialize = function() {
     return initBodies;
 };
 
+Simulator.prototype.load = function(b) {
+    this.bodies = new Array(b.length);
+    for(var i = 0; i < b.length; i++) {
+        this.bodies[i] = new Body( b[0], b[1],  b[2],   b[3], b[4], 0);;
+    }
+};
+
 Simulator.prototype.getDistance = function(x1,y1,x2,y2) {
 
     return Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2));
