@@ -78,9 +78,18 @@
                         <span class="glyphicon glyphicon-open" style="padding: 5%;"> </span> 
                     </button>
 
-                    <button class="btn btn-default btn-lg" name="reset"  ng-disabled="!connected" >
-                        <span class="glyphicon glyphicon-cog" style="padding: 5%;"> </span>    
+                    <button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false" name="reset" id="options"  ng-disabled="!connected" >
+                        <span class="glyphicon glyphicon-cog" style="padding: 5%;"> </span>
+                        <span class="caret"></span>    
                     </button>
+                     <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                      </ul>              
+
 				</div>
                 <input type="checkbox" ng-model="enableViewportSync">
                 <a href="#" ng-click="admin()">admin</a>
