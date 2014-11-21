@@ -349,11 +349,11 @@ function($scope) {
                 });
             } else if (command === 'add') {
                 $scope.$apply(function() {
-                    log("recived add!");
+                    log("")
                 });
             } else if (command === 'delete') {
                 $scope.$apply(function() {
-                    log("recived delete");   
+                     log("")
                 });
             }
         };
@@ -372,7 +372,6 @@ function($scope) {
     };
 
     $scope.add = function() {
-        log("add pressed.");
         console.log($scope.viewport.translation);
         angularSend({ command: 'add', info: [(-$scope.viewport.translation[0]+parseInt($("svg").css("width").replace("px", ""))/2)/$scope.viewport.zoom, (-$scope.viewport.translation[1]+parseInt($("svg").css("height").replace("px", ""))/2)/$scope.viewport.zoom, 0, 0, 500, 42]});
     };
@@ -382,7 +381,7 @@ function($scope) {
     };
 
     $scope.start = function() {
-        log("start");
+
         angularSend({ command: 'start' });
     };
 
