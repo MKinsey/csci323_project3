@@ -192,8 +192,7 @@ function socket_homepage() {
         }
 
         if  (command == 'load') {
-            var query = System.where({});
-            query.findOne(function(err, res) {
+            System.findOne({}, function(err, res) {
                     if(res) {
                         console.log("found one");
                         simulation.load(res.bodies);
