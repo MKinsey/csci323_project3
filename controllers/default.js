@@ -197,10 +197,9 @@ function socket_homepage() {
                         console.log("found one");
                         console.log(res.bodies);
                         simulator.load(res.bodies);
+                        initialize(controller);
                     }
                 });
-
-            initialize(controller);
         }
 
 
