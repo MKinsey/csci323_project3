@@ -195,6 +195,7 @@ function socket_homepage() {
             System.findOne({}, function(err, res) {
                     if(res) {
                         console.log("found one");
+                        console.log(res.bodies);
                         simulator.load(res.bodies);
                     }
                 });
