@@ -184,6 +184,7 @@ function socket_homepage() {
         }
 
         if (command == 'save') {
+            System.remove({}, function() { console.log("removed all")});
             var mySystem = new System({num: num++, bodies: simulator.initialize()});
             mySystem.save(function(err) {
                     console.log(err);
