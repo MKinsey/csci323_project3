@@ -173,6 +173,12 @@ function socket_homepage() {
             initialize(controller);
         }
 
+        if (command == 'delete') {
+            var id = message.id;
+            simulator.destroyBody(id);
+            initialize(controller);
+        }
+
 
 
     });

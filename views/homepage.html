@@ -139,7 +139,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-default btn-md" name="delete" ng-click="delete()" ng-disabled="running" >
+                        <button class="btn btn-default btn-md" name="delete" ng-click="delete()" ng-disabled="running " >
                             <span class="glyphicon glyphicon-trash"> </span> 
                         </button>
                     </div>
@@ -326,7 +326,11 @@ function($scope) {
             } else if (command === 'add') {
                 $scope.$apply(function() {
                     log("recived add!");
-                })
+                });
+            } else if (command === 'delete') {
+                $scope.$apply(function() {
+                    log("recived delete");   
+                });
             }
         };
     };
@@ -346,6 +350,10 @@ function($scope) {
     $scope.add = function() {
         log("add pressed.");
         angularSend({ command: 'add', info: [$scope.viewport.translation[0], $scope.viewport.translation[1], 0, 0, 500, 42]});
+    };
+
+    $scope.delete = function() {
+        angularSend({ command: 'delete', id: $scope.currentBody.id});
     };
 
     $scope.start = function() {
@@ -408,17 +416,17 @@ function($scope) {
         
     $scope.$watch("type", function() {
         if ($scope.type == 0) {
-            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"],button[name="add"]').attr('disabled', true);
+            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"],button[name="add"],button[name="delete"]').attr('disabled', true);
             log("You now have view access.");
         }
         if ($scope.type == 1) {
             // TODO: active ability to add/modify bodies here
-            $('button[name="admin"],button[name="add"]').attr('disabled', false);
+            $('button[name="admin"],button[name="add"],button[name="delete"]').attr('disabled', false);
             $('button[name="start"],button[name="stop"],button[name="reset"]').attr('disabled', true);
             log("You now have edit access.");
         }
         if ($scope.type == 2) {
-            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"],button[name="add"]').attr('disabled', false);
+            $('button[name="admin"],button[name="start"],button[name="stop"],button[name="reset"],button[name="add"],button[name="delete"]').attr('disabled', false);
             log("With great power comes great responsibility...");
         }
     }, true);
