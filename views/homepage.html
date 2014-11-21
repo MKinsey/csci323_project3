@@ -54,43 +54,43 @@
             </div>
 
 			<div class="col-md-4" >
-                <div class="btn btn-group" role="group" style="padding-top:5%;" >
+                <div class="btn btn-group" role="group" style="padding-top:5%;" aria-label="..." >
 
                      <button class="btn btn-default btn-lg" name="start" ng-click="start_stop()" >
-                        <span ng-class="{'glyphicon glyphicon-play': !running, 'glyphicon glyphicon-pause': running}" style="padding: 5%;"> </span>  
+                        <span ng-class="{'glyphicon glyphicon-play': !running, 'glyphicon glyphicon-pause': running}" > </span>  
                     </button>
 
                     <button class="btn btn-default btn-lg" name="reset" ng-click="reset()" ng-disabled="!connected" >
-                        <span class="glyphicon glyphicon-repeat" style="padding: 5%;"> </span>    
+                        <span class="glyphicon glyphicon-repeat" > </span>    
                     </button>
 
                     <button class="btn btn-default btn-lg" name="add" ng-click="add()" ng-disabled="running" >
-                        <span class="glyphicon glyphicon-plus" style="padding: 5%;"> </span> 
+                        <span class="glyphicon glyphicon-plus" > </span> 
                     </button>
 
                     <button class="btn btn-default btn-lg" name="save" ng-click="save()" ng-disabled="running || type < 2" >
-                        <span class="glyphicon glyphicon-save" style="padding: 5%;"> </span> 
+                        <span class="glyphicon glyphicon-save" > </span> 
                     </button>
                     
                     <button class="btn btn-default btn-lg" name="open" ng-click="load()" ng-disabled="running || type < 2" >
-                        <span class="glyphicon glyphicon-open" style="padding: 5%;"> </span> 
+                        <span class="glyphicon glyphicon-open" > </span> 
                     </button>
 
-                    <button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false" name="reset" id="options"  ng-disabled="!connected" >
-                        <span class="glyphicon glyphicon-cog" style="padding: 5%;"> </span>
-                        <span class="caret"></span>    
-                    </button>
+                    
+                        <button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" id="options"  ng-disabled="!connected" aria-expanded="false">
+                            <span class="glyphicon glyphicon-cog"> </span>
+                            <span class="caret pull-right"></span>    
+                        </button>
+                    
                      <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
+                        <li><input type="checkbox" ng-model="enableViewportSync"> enable viewport sync</li>
                         <li class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
+                        <li><a href="#" ng-click="admin()"> login</a></li>
                       </ul>              
-
+                    
 				</div>
-                <input type="checkbox" ng-model="enableViewportSync">
-                <a href="#" ng-click="admin()">admin</a>
+                
+
                 <input ng-model="viewport.zoom" type="range" max="10" min="0.1" step="0.1" style="padding:3%;" readonly="readonly" />
                 <div class="col-md-8">
                     <div class="dropdown" style="width:100%;">
@@ -126,17 +126,22 @@
                     <div class="col-md-2">
                         <h5>Pos</h5>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="input-group">
                             <div class="input-group-addon">x</div>
                             <input ng-model="currentBody.x" ng-disabled="editDisabled()" type="number" placeholder="X position of Planet 2" style="width: 75px;" class="form-control"/>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="input-group">
                             <div class="input-group-addon">y</div>
                             <input ng-model="currentBody.y" ng-disabled="editDisabled()" type="number" placeholder="Y position of Planet 2" style="width: 75px;" class="form-control" />
                         </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-default btn-md" name="delete" ng-click="delete()" ng-disabled="running" >
+                            <span class="glyphicon glyphicon-trash"> </span> 
+                        </button>
                     </div>
                 </div>
                 <div class="col-md-6 panel-body" style="text-align: center; border-left: 1px solid #ddd;">
@@ -340,7 +345,7 @@ function($scope) {
 
     $scope.add = function() {
         log("add pressed.");
-        angularSend({ command: 'add'});
+        angularSend({ command: 'add', info: [$scope.viewport.translation[0], $scope.viewport.translation[1], 0, 0, 500, 42]});
     };
 
     $scope.start = function() {
