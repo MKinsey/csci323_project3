@@ -38,6 +38,19 @@
     <![endif]-->
 </head>
 
+<style>
+#main-controls {
+    padding-top: 5%;
+    margin-left: 26px;
+}
+@media screen and (min-width: 768px) and (max-width: 1199px) { 
+    #main-controls {
+        margin-left: -10px;
+        width: 310px;
+    }
+}
+</style>
+
 <body>
 <div class="container-full" ng-controller="BodyCtrl">
 
@@ -54,7 +67,7 @@
             </div>
 
 			<div class="col-md-4" >
-                <div class="btn-group" role="group" style="padding-top:5%; margin-left: 26px;" aria-label="..." >
+                <div class="btn-group" id="main-controls" role="group" aria-label="..." >
 
                      <button class="btn btn-default btn-lg" name="start" ng-click="start_stop()" >
                         <span ng-class="{'glyphicon glyphicon-play': !running, 'glyphicon glyphicon-pause': running}" > </span>  
