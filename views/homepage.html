@@ -224,6 +224,13 @@ function($scope) {
     $scope.ping = null;
     $scope.fps = null;
 
+    $scope.audio = document.createElement('audio');
+    $scope.audioToneLow = '/media/ToneLow.mp3';
+    $scope.audioToneMid = '/media/ToneMid.mp3';
+    $scope.audioToneHigh = '/media/ToneHigh.mp3';
+    $scope.audioTriple = '/media/Triple.mp3';
+    $scope.audioThud = '/media/Thud.mp3';
+
     $scope.users = 1;
 
     $('#username').editable({
@@ -317,6 +324,9 @@ function($scope) {
                 $scope.viewportOther = {zoom: message.zoom, translation: message.translation};
             } else if (command === 'users') {
                 $scope.$apply(function() {
+                    if (message.users > $scope.users) {
+                        $scope.playSound($scope.audioToneHigh);
+                    }
                         $scope.users = message.users;
                     });
             } else if (command === 'start') {
@@ -345,6 +355,7 @@ function($scope) {
                 });
             } else if (command === 'chat') {
                 $scope.$apply(function() {
+                    $scope.playSound($scope.audioToneMid);
                     log(message.sender + ": " + message.text);
                 });
             } else if (command === 'add') {
@@ -369,6 +380,11 @@ function($scope) {
 
     $scope.stop = function() {
         angularSend({ command: 'stop' });
+    };
+
+    $scope.playSound = function(source) {
+        $scope.audio.src = source;
+        $scope.audio.play();
     };
 
     $scope.add = function() {
