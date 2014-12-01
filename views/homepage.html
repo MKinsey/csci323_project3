@@ -144,45 +144,48 @@
         <hr style="margin-bottom: 0px">
             <d3-bodies running="running" enable-viewport-sync="enableViewportSync" user-type="type" height-trim="175" min-zoom="0.1" max-zoom="10" size-factor="0.5" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
             <div class="container"><div class="row panel panel-default" ng-hide="currentBody==null" style="position: absolute; bottom: 0; margin-bottom: 15px; left: 10%; right: 10%;">
-                <div class="col-md-6 panel-body" style="text-align: center;">
+                <div class="col-md-8 panel-body" style="text-align: center;">
                     <div class="col-md-2">
                         <h5>Body Data</h5>
                     </div>
                     <div class="col-md-4">
-                        <div class="input-group">
-                            <div class="input-group-addon">X Position</div>
-                            <input ng-model="currentBody.x" ng-disabled="editDisabled()" type="number" placeholder="X position of Planet 2" style="width: 100px;" class="form-control"/>
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="input-group-addon">X Position</div>
+                                <input ng-model="currentBody.x" ng-disabled="editDisabled()" type="number" placeholder="X position of Planet 2" style="min-width: 25px;max-width : 100px;" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="input-group-addon">X Velocity</div>
+                                <input ng-model="currentBody.xx" ng-disabled="editDisabled()" type="number" placeholder="Initial x velocity of Planet 2" style="min-width: 25px;max-width : 100px;" class="form-control"/>
+                            </div>
                         </div>
                     </div>
+
                     <div class="col-md-4">
-                        <div class="input-group">
-                            <div class="input-group-addon">Y Position</div>
-                            <input ng-model="currentBody.y" ng-disabled="editDisabled()" type="number" placeholder="Y position of Planet 2" style="width: 100px;" class="form-control" />
+                        <div class="row">                            
+                            <div class="input-group">
+                                <div class="input-group-addon">Y Position</div>
+                                <input ng-model="currentBody.y" ng-disabled="editDisabled()" type="number" placeholder="Y position of Planet 2" style="min-width: 25px;max-width : 100px;" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="input-group-addon">Y Velocity</div>
+                                <input ng-model="currentBody.yy" ng-disabled="editDisabled()" type="number" placeholder="Initial y velocity of Planet 2" style="min-width: 25px;max-width : 100px;" class="form-control" />
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <div class="input-group-addon">X Velocity</div>
-                            <input ng-model="currentBody.xx" ng-disabled="editDisabled()" type="number" placeholder="Initial x velocity of Planet 2" style="width: 100px;" class="form-control"/>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <div class="input-group-addon">Y Velocity</div>
-                            <input ng-model="currentBody.yy" ng-disabled="editDisabled()" type="number" placeholder="Initial y velocity of Planet 2" style="width: 100px;" class="form-control" />
-                        </div>
-                    </div>
-
-
-
-                    <div class="col-md-2">
+                    <div class="col-md-2 panel-body">
                         <button class="btn btn-default btn-md" name="delete" ng-click="delete()" ng-disabled="running " >
                             <span class="glyphicon glyphicon-trash"> </span> 
                         </button>
                     </div>
                 </div>
-                <div class="col-md-6 panel-body" style="text-align: center; border-left: 1px solid #ddd;">
+                <div class="col-md-4 panel-body" style="text-align: center;">
                     <div class="input-group">
                         <div class="input-group-addon">Mass:</div>
                         <input ng-model="currentBody.m" ng-disabled="editDisabled()" type="number" min="0" placeholder="Mass of Planet 1" class="form-control" />
