@@ -142,7 +142,7 @@
     <div class="row" style="margin-right: 0;">
         <div class="col-md-12" style="padding-right: 0">
         <hr style="margin-bottom: 0px">
-            <d3-bodies running="running" enable-viewport-sync="enableViewportSync" user-type="type" height-trim="175" min-zoom="0.1" max-zoom="10" size-factor="0.5" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
+            <d3-bodies running="running" enable-viewport-sync="enableViewportSync" user-type="type" name="name" height-trim="175" min-zoom="0.1" max-zoom="10" size-factor="0.5" bodies="bodies" viewport="viewport" current-body="currentBody"></d3-bodies>
             <div class="container"><div class="row panel panel-default" ng-hide="currentBody==null" style="position: absolute; bottom: 0; margin-bottom: 15px; left: 10%; right: 10%;">
                 <div class="col-md-8 panel-body" style="text-align: center;">
                     <div class="col-md-2">
@@ -190,6 +190,10 @@
                         <div class="input-group-addon">Mass:</div>
                         <input ng-model="currentBody.m" ng-disabled="editDisabled()" type="number" min="0" placeholder="Mass of Planet 1" class="form-control" />
                     </div>
+                    <div class="input-group">
+                        <h5>User: {{currentBody.}}</h5>
+                    </div>
+
                 </div>
             </div></div>
         </div>
@@ -276,7 +280,13 @@ function($scope) {
     }
 
     $scope.editDisabled = function() {
-        return $scope.running || !($scope.type > 1);
+        if ($scope.type == 2) {
+            return false;
+        }
+        if ($scope.currentBody == null) {
+            return $scope.running || ($scope.type < 1);
+        }
+        return $scope.running || ($scope.type < 1) || $scope.name != $scope.currentBody.userID;
     };
     
     $scope.connect = function() {
@@ -313,6 +323,7 @@ function($scope) {
                         bodyStruct['yy'] = body[4];
                         bodyStruct['m'] = body[5];
                         bodyStruct['c'] = body[6];
+                        bodyStruct['userID'] = body[7];
                         bodyData.push(bodyStruct);
 
                     }
@@ -345,6 +356,7 @@ function($scope) {
                         bodyData[body.id].xx = body.xx;
                         bodyData[body.id].yy = body.yy;
                         bodyData[body.id].m = body.m;
+                        bodyData[body.id].userID = body.userID;
                     });
             } else if (command === 'viewport' && $scope.enableViewportSync) {
                 watchProblem = true;
@@ -426,7 +438,7 @@ function($scope) {
     $scope.add = function() {
         console.log($scope.viewport.translation);
         $scope.playSound($scope.audioThud);
-        angularSend({ command: 'add', info: [(-$scope.viewport.translation[0]+parseInt($("svg").css("width").replace("px", ""))/2)/$scope.viewport.zoom, (-$scope.viewport.translation[1]+parseInt($("svg").css("height").replace("px", ""))/2)/$scope.viewport.zoom, 0, 0, 500]});
+        angularSend({ command: 'add', info: [(-$scope.viewport.translation[0]+parseInt($("svg").css("width").replace("px", ""))/2)/$scope.viewport.zoom, (-$scope.viewport.translation[1]+parseInt($("svg").css("height").replace("px", ""))/2)/$scope.viewport.zoom, 0, 0, 500,$scope.name]});
     };
 
     $scope.delete = function() {
@@ -520,7 +532,7 @@ function($scope) {
 
     $scope.$watch("bodies", function(newBodies) {
            if(!$scope.running && !watchBodyProblem && $scope.currentBody != null) {
-                angularsocket.send(encodeURIComponent(JSON.stringify({command: "edit", body: $scope.currentBody})));
+                angularsocket.send(encodeURIComponent(JSON.stringify({command: 'edit', body: $scope.currentBody})));
            }
            watchBodyProblem = false;
         }, true);

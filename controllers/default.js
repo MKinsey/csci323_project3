@@ -173,7 +173,7 @@ function socket_homepage() {
 
         if (command == 'add') {
             var info = message.info;
-            simulator.addBody(info[0],info[1],info[2],info[3],info[4],idCounter);   //(x,y,xx,yy,m,userID)
+            simulator.addBody(info[0],info[1],info[2],info[3],info[4],info[5]);   //(x,y,xx,yy,m,userID)
             console.log("Adding Body:",info[0],info[1],info[2],info[3],info[4],idCounter);
             idCounter += 1;
             initialize(controller);
