@@ -311,6 +311,7 @@ function($scope) {
                         bodyStruct['m'] = body[5];
                         bodyStruct['c'] = body[6];
                         bodyData.push(bodyStruct);
+
                     }
                     $scope.bodies = bodyData;
                     if($scope.currentBody != null) {
@@ -326,6 +327,7 @@ function($scope) {
                             bodyData[i].y = positions[i][2];
                             bodyData[i].xx = positions[i][3];
                             bodyData[i].yy = positions[i][4];
+
 
                         }
                         $scope.ping = Math.round(message.ping*100)/100;
@@ -421,7 +423,7 @@ function($scope) {
     $scope.add = function() {
         console.log($scope.viewport.translation);
         $scope.playSound($scope.audioThud);
-        angularSend({ command: 'add', info: [(-$scope.viewport.translation[0]+parseInt($("svg").css("width").replace("px", ""))/2)/$scope.viewport.zoom, (-$scope.viewport.translation[1]+parseInt($("svg").css("height").replace("px", ""))/2)/$scope.viewport.zoom, 0, 0, 500, 42]});
+        angularSend({ command: 'add', info: [(-$scope.viewport.translation[0]+parseInt($("svg").css("width").replace("px", ""))/2)/$scope.viewport.zoom, (-$scope.viewport.translation[1]+parseInt($("svg").css("height").replace("px", ""))/2)/$scope.viewport.zoom, 0, 0, 500]});
     };
 
     $scope.delete = function() {
