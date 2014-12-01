@@ -72,12 +72,8 @@ Body.prototype.print = function() {
 };
 
 Body.prototype.getColor = function() {
-    return '#'+Math.random().toString(16).substr(-6);
-};
-
-Body.prototype.getColor = function() { //TODO logic for when a bodies mass is updated.
     
-    if (this.m<this.asteroidMass){ //asteroids
+    if (this.m<100){ //asteroids
         var colors = ['DarkGrey', 'DimGrey', 'LightSteelBlue', 'Silver', 'SlateGray'];
         var color = colors[Math.floor(Math.random() * colors.length)];
     } else if (this.m<1000){ // planets
