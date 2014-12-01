@@ -6,7 +6,7 @@ exports.install = function(framework) {
 var Userbase = require('./lib/userbase.js');
 var Simulator = require('./lib/simulator.js');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/systems');
+mongoose.connect('mongodb://localhost/orbitable');
 
 // OTHER
 var userbase = new Userbase();
@@ -51,7 +51,39 @@ function view_homepage() {
 }
 
 var num = 0;
-var System = mongoose.model('System', { bodies: [] });
+var SystemSchema = new mongoose.Schema({ num: Number, bodies: [] });
+var System = mongoose.model('System', SystemSchema);
+var UserSchema = new mongoose.Schema({ orbitable_id: String, name: String, permissions: Number });
+var User = mongoose.model('User', UserSchema);
+
+function generateName() {
+    var adjs = [
+                "autumn", "hidden", "bitter", "misty", "silent", "empty", "dry", "dark",
+                "summer", "icy", "delicate", "quiet", "white", "cool", "spring", "winter",
+                "patient", "twilight", "dawn", "crimson", "wispy", "weathered", "blue",
+                "billowing", "broken", "cold", "damp", "falling", "frosty", "green",
+                "long", "late", "lingering", "bold", "little", "morning", "muddy", "old",
+                "red", "rough", "still", "small", "sparkling", "throbbing", "shy",
+                "wandering", "withered", "wild", "black", "young", "holy", "solitary",
+                "fragrant", "aged", "snowy", "proud", "floral", "restless", "divine",
+                "polished", "ancient", "purple", "lively", "nameless"
+                ];
+
+    var nouns = [
+                 "waterfall", "river", "breeze", "moon", "rain", "wind", "sea", "morning",
+                 "snow", "lake", "sunset", "pine", "shadow", "leaf", "dawn", "glitter",
+                 "forest", "hill", "cloud", "meadow", "sun", "glade", "bird", "brook",
+                 "butterfly", "bush", "dew", "dust", "field", "fire", "flower", "firefly",
+                 "feather", "grass", "haze", "mountain", "night", "pond", "darkness",
+                 "snowflake", "silence", "sound", "sky", "shape", "surf", "thunder",
+                 "violet", "water", "wildflower", "wave", "water", "resonance", "sun",
+                 "wood", "dream", "cherry", "tree", "fog", "frost", "voice", "paper",
+                 "frog", "smoke", "star"
+                 ];
+
+    var rnd = Math.floor(Math.random()*Math.pow(2,12));
+    return adjs[rnd>>6%64]+"-"+nouns[rnd%64];
+}
 
 function socket_homepage() {
 
@@ -61,18 +93,37 @@ function socket_homepage() {
 
         // WHEN USER CONNECTS
 
-        client.name = "guest" + client.cookie("__orbitable_id");
-        var index = userbase.addUser(client.name,client.id,0);
-        if (userbaseDebug) {userbase.print();}
-        client.send({command: 'updateuser', name: client.name, type: 0, index: index});
+        // Look up user if exists
+        var query = User.where({ orbitable_id: client.cookie("__orbitable_id")});
+        query.findOne(function(err, usr) {
+                if(err) {
+                    console.log("user fetch error: " + err);
+                } else if(usr) {
+                    console.log("found user");
+                    console.log(usr);
+                    client.name = usr.name;
+                    client.permissions = usr.permissions;
+                    var index = userbase.addUser(usr.name, client.id, usr.permissions);
+                    client.send({command: 'updateuser', name: usr.name, type: usr.permissions, index: index});
+                } else {
+                    var newUser = new User({ orbitable_id: client.cookie("__orbitable_id"), name: generateName(), permissions: 0 });
+                    newUser.save(function(err) {
+                            if(err) console.log("new user error: " + err);
+                        });
+                    console.log(newUser);
+                    client.name = newUser.name;
+                    client.permissions = newUser.permissions;
+                    var index = userbase.addUser(newUser.name, client.id, newUser.permissions);
+                    client.send({command: 'updateuser', name: newUser.name, type: newUser.permissions, index: index});
+                }
+                console.log('Connect (' + client.name + ') / Online:', controller.online);
+                controller.send({command: 'users', users: controller.online});
+            });
 
 
         //client.send({command: 'updateuser', name: client.name, type: 2, index: index});
         //client.send({command: 'message', text: "You have been automatically assigned an admin access level."});
 
-
-        console.log('Connect (' + client.name + ') / Online:', controller.online);
-        controller.send({command: 'users', users: controller.online});
 
         //client.send({command: 'message', message: 'User Connected: {0}'.format(client.id) });
         //controller.send({command: 'message',  message: 'Connect new user: {0}\nOnline: {1}'.format(client.id, controller.online) }, [], [client.id]);
@@ -146,6 +197,12 @@ function socket_homepage() {
                 client.send({command: 'updateuser', name: name, type: null, index: null});
                 console.log("Renamed: " + client.name + " --> " + name);
                 client.send({command: 'message', text: client.name + " renamed to " + name + "."});
+                User.findOne({ name: client.name }, function(err, usr) {
+                        if(!err && usr) {
+                            usr.name = name;
+                            usr.save();
+                        }
+                    });
                 client.name = name;
             }
             else {
@@ -163,6 +220,13 @@ function socket_homepage() {
             if (userbase.setType(index,type,key)) {
                 client.send({command: 'updateuser', name: null, type: type, index: null});
                 console.log("Updated type: " + client.name + " now has permission level " + type + ".");
+                User.findOne({orbitable_id: client.cookie("__orbitable_id")}, function(err, usr) {
+                        console.log("hello!", err, usr);
+                        if(!err && usr) {
+                            usr.permissions = type;
+                            usr.save();
+                        }
+                    });
             }
             else {
                 console.log("Type update denied: Incorrect admin key.");
