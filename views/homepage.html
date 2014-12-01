@@ -283,9 +283,10 @@ function($scope) {
         if ($scope.type == 2) {
             return false;
         }
-        if ($scope.currentBody == null) {
+        if ($scope.currentBody == null || $scope.currentBody.userID == null) {
             return $scope.running || ($scope.type < 1);
         }
+
         return $scope.running || ($scope.type < 1) || $scope.name != $scope.currentBody.userID;
     };
 
