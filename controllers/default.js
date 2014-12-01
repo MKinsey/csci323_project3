@@ -107,6 +107,8 @@ function socket_homepage() {
         if (command == 'edit') {
             simulator.bodies[message.body.id].x = message.body.x;
             simulator.bodies[message.body.id].y = message.body.y;
+            simulator.bodies[message.body.id].xx = message.body.xx;
+            simulator.bodies[message.body.id].yy = message.body.yy;
             simulator.bodies[message.body.id].m = message.body.m;
 
             controller.send({command:'edit', body: message.body}, [], [client.id]);

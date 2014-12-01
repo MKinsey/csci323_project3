@@ -38,10 +38,10 @@ Body.prototype.addMass = function(m) {
 };
 
 Body.prototype.serializeUpdate = function() {
-    return [this.bodyID, Math.round(this.x*100)/100, Math.round(this.y*100)/100];
+    return [this.bodyID, Math.round(this.x*100)/100, Math.round(this.y*100)/100, this.xx, this.yy];
 };
 Body.prototype.serializeInitial = function() {
-    return [this.bodyID, Math.round(this.x*100)/100, Math.round(this.y*100)/100, this.m, this.c, this.userID];
+    return [this.bodyID, Math.round(this.x*100)/100, Math.round(this.y*100)/100, this.xx, this.yy, this.m, this.c, this.userID];
 };
 
 Body.prototype.toString = function() {

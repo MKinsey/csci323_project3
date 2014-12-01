@@ -146,20 +146,36 @@
             <div class="container"><div class="row panel panel-default" ng-hide="currentBody==null" style="position: absolute; bottom: 0; margin-bottom: 15px; left: 10%; right: 10%;">
                 <div class="col-md-6 panel-body" style="text-align: center;">
                     <div class="col-md-2">
-                        <h5>Pos</h5>
+                        <h5>Body Data</h5>
                     </div>
                     <div class="col-md-4">
                         <div class="input-group">
-                            <div class="input-group-addon">x</div>
-                            <input ng-model="currentBody.x" ng-disabled="editDisabled()" type="number" placeholder="X position of Planet 2" style="width: 75px;" class="form-control"/>
+                            <div class="input-group-addon">X Position</div>
+                            <input ng-model="currentBody.x" ng-disabled="editDisabled()" type="number" placeholder="X position of Planet 2" style="width: 100px;" class="form-control"/>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="input-group">
-                            <div class="input-group-addon">y</div>
-                            <input ng-model="currentBody.y" ng-disabled="editDisabled()" type="number" placeholder="Y position of Planet 2" style="width: 75px;" class="form-control" />
+                            <div class="input-group-addon">Y Position</div>
+                            <input ng-model="currentBody.y" ng-disabled="editDisabled()" type="number" placeholder="Y position of Planet 2" style="width: 100px;" class="form-control" />
                         </div>
                     </div>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-addon">X Velocity</div>
+                            <input ng-model="currentBody.xx" ng-disabled="editDisabled()" type="number" placeholder="Initial x velocity of Planet 2" style="width: 100px;" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-addon">Y Velocity</div>
+                            <input ng-model="currentBody.yy" ng-disabled="editDisabled()" type="number" placeholder="Initial y velocity of Planet 2" style="width: 100px;" class="form-control" />
+                        </div>
+                    </div>
+
+
+
                     <div class="col-md-2">
                         <button class="btn btn-default btn-md" name="delete" ng-click="delete()" ng-disabled="running " >
                             <span class="glyphicon glyphicon-trash"> </span> 
@@ -290,8 +306,10 @@ function($scope) {
                         bodyStruct['id'] = body[0];
                         bodyStruct['x'] = body[1];
                         bodyStruct['y'] = body[2];
-                        bodyStruct['m'] = body[3];
-                        bodyStruct['c'] = body[4];
+                        bodyStruct['xx'] = body[3];
+                        bodyStruct['yy'] = body[4];
+                        bodyStruct['m'] = body[5];
+                        bodyStruct['c'] = body[6];
                         bodyData.push(bodyStruct);
                     }
                     $scope.bodies = bodyData;
@@ -306,6 +324,9 @@ function($scope) {
                         for (var i = 0; i < positions.length; i++) {
                             bodyData[i].x = positions[i][1];
                             bodyData[i].y = positions[i][2];
+                            bodyData[i].xx = positions[i][3];
+                            bodyData[i].yy = positions[i][4];
+
                         }
                         $scope.ping = Math.round(message.ping*100)/100;
                         $scope.fps = Math.round(10000/$scope.ping)/10;
@@ -316,6 +337,8 @@ function($scope) {
                         var body = message.body;
                         bodyData[body.id].x = body.x;
                         bodyData[body.id].y = body.y;
+                        bodyData[body.id].xx = body.xx;
+                        bodyData[body.id].yy = body.yy;
                         bodyData[body.id].m = body.m;
                     });
             } else if (command === 'viewport' && $scope.enableViewportSync) {
