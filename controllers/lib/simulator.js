@@ -13,9 +13,9 @@ var n = 20;
 function Simulator() {
 
     this.bodies = new Array(3);
-    this.bodies[0] = new Body( 100, 300,  0,   0, 800,0); // SUN
-    this.bodies[1] = new Body( 400, 300,  0,  42.75, 10,1);   // EARTH
-    this.bodies[2] = new Body( 430, 300,  0,  55,  1,2);   // MOON
+    this.bodies[0] = new Body( 100, 300,  0,   0, 800,0, 'admin'); // SUN
+    this.bodies[1] = new Body( 400, 300,  0,  42.75, 10,1, 'admin');   // EARTH
+    this.bodies[2] = new Body( 430, 300,  0,  55,  1,2, 'admin');   // MOON
 
     this.G = 667.3;                 // Establish gravitational constant
     this.PI2 = Math.PI * 2;         // Establish this.PI2 constant
