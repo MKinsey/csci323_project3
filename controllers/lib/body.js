@@ -11,6 +11,9 @@ function Body(x, y, xx, yy, m, bodyID, userID) {
     this.c = this.getColor();
     this.bodyID = bodyID;
     this.userID = userID;
+    this.asteroidMass = 100;
+    this.planetMass = 1000;
+    this.starMass = 10000; 
 }
 
 Body.prototype.addForce = function(fx,fy) {
@@ -33,7 +36,12 @@ Body.prototype.applyForce = function(dt,pdt) {
 
 };
 
+Body.prototype.setMass = function(m) {
+    this.m = m;
+}
+
 Body.prototype.addMass = function(m) {
+    checkMass(m);
     this.m += m;
 
 };
@@ -59,7 +67,7 @@ Body.prototype.cloneBody = function() {
     bodyID = this.bodyID;
     userID = this.userID;
     return new Body(x, y, xx, yy, m, bodyID, userID)
-}
+};
 
 Body.prototype.print = function() {
     console.log(this.toString());
@@ -70,19 +78,35 @@ Body.prototype.getColor = function() { //TODO logic for when a bodies mass is up
     if (this.m<100){ //asteroids
         var colors = ['DarkGrey', 'DimGrey', 'LightSteelBlue', 'Silver', 'SlateGray'];
         var color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    else if (this.m<1000){ // planets
+    } else if (this.m<1000){ // planets
         var colors = ['DarkOliveGreen', 'CornflowerBlue', 'LightSeaGreen', 'OliveDrab', 'RoyalBlue'];
         var color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    else if (this.m<10000){ // stars
+    } else if (this.m<10000){ // stars
         var colors = ['Orange', 'Gold', 'Crimson', 'FireBrick'];
         var color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    else{
+    } else{
         var color = '301241';
     }
 
     return color;
+    
     //return '#'+Math.random().toString(16).substr(-6);
+};
+
+Body.prototype.checkMass = function(addedMass) {
+    if (this.m<this.asteroidMass){
+        if (this.m+addedMass > asteroidMass){
+            this.getColor;
+        }
+
+    } else if (this.m<this.planetMass){
+        if (this.m+addedMass > planetMass){
+            this.getColor;
+        }
+
+    } else if (this.m<this.starMass){
+        if (this.m+addedMass > starMass){
+            this.getColor;
+        }
+    }
 };
