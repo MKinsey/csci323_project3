@@ -41,7 +41,6 @@ Body.prototype.setMass = function(m) {
 }
 
 Body.prototype.addMass = function(m) {
-    checkMass(m);
     this.m += m;
 
 };
@@ -75,7 +74,7 @@ Body.prototype.print = function() {
 
 Body.prototype.getColor = function() { //TODO logic for when a bodies mass is updated.
     
-    if (this.m<100){ //asteroids
+    if (this.m<this.asteroidMass){ //asteroids
         var colors = ['DarkGrey', 'DimGrey', 'LightSteelBlue', 'Silver', 'SlateGray'];
         var color = colors[Math.floor(Math.random() * colors.length)];
     } else if (this.m<1000){ // planets
@@ -93,20 +92,3 @@ Body.prototype.getColor = function() { //TODO logic for when a bodies mass is up
     //return '#'+Math.random().toString(16).substr(-6);
 };
 
-Body.prototype.checkMass = function(addedMass) {
-    if (this.m<this.asteroidMass){
-        if (this.m+addedMass > asteroidMass){
-            this.getColor;
-        }
-
-    } else if (this.m<this.planetMass){
-        if (this.m+addedMass > planetMass){
-            this.getColor;
-        }
-
-    } else if (this.m<this.starMass){
-        if (this.m+addedMass > starMass){
-            this.getColor;
-        }
-    }
-};
