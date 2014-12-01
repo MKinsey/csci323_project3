@@ -288,6 +288,14 @@ function($scope) {
         }
         return $scope.running || ($scope.type < 1) || $scope.name != $scope.currentBody.userID;
     };
+
+    $scope.save = function() {
+        angularSend({command: 'save'});
+    };
+
+    $scope.load = function() {
+        angularSend({command: 'load'});
+    };
     
     $scope.connect = function() {
         angularsocket = new WebSocket('@{config['websocket-url']}');

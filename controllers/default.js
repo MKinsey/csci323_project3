@@ -5,7 +5,8 @@ exports.install = function(framework) {
 }
 var Userbase = require('./lib/userbase.js');
 var Simulator = require('./lib/simulator.js');
-
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/systems');
 
 // OTHER
 var userbase = new Userbase();
@@ -23,8 +24,6 @@ var steps = 0;
 // VIEW
 var translation = [0,0];
 var zoom = 1;
-
-
 
 
 function step() {
@@ -50,6 +49,9 @@ function view_homepage() {
     var cookie = self.req.cookie('__orbitable_id');
     if (!cookie) self.res.cookie('__orbitable_id', Date.now());
 }
+
+var num = 0;
+var System = mongoose.model('System', { bodies: [] });
 
 function socket_homepage() {
 
@@ -183,6 +185,25 @@ function socket_homepage() {
             var id = message.id;
             simulator.destroyBody(id);
             initialize(controller);
+        }
+
+        if (command == 'save') {
+            System.remove({}, function() { console.log("removed all")});
+            var mySystem = new System({num: num++, bodies: simulator.initialize()});
+            mySystem.save(function(err) {
+                    console.log(err);
+                });
+        }
+
+        if  (command == 'load') {
+            System.findOne({}, function(err, res) {
+                    if(res) {
+                        console.log("found one");
+                        console.log(res.bodies);
+                        simulator.load(res.bodies);
+                        initialize(controller);
+                    }
+                });
         }
 
 
